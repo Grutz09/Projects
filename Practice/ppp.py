@@ -10,4 +10,4 @@ import pandas as pd
 
 wine_review = pd.read_csv(r"C:\Users\seanandrew\Desktop\kaggle_datasets\winemag-data-130k-v2.csv", index_col=0)
 
-print(wine_review.loc[:5, ['taster_name', 'taster_twitter_handle']])   
+print(wine_review.loc[wine_review.country == 'US'])   
