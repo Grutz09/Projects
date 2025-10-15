@@ -56,5 +56,11 @@ wine = pd.read_csv(r"C:\Users\seanandrew\Desktop\kaggle_datasets\winemag-data-13
 # common_wines = wine['region_1'].fillna("Unknown").value_counts()
 # reviews_per_region = common_wines.sort_values(ascending=False)
 
-wine.rename(columns={'points': 'score'})
-print(wine.rename_axis("wines", axis='rows').rename_axis("fields", axis='columns'))
+# wine.rename(columns={'points': 'score'})
+# wine.rename_axis("wines", axis='rows').rename_axis("fields", axis='columns')
+
+df = pd.DataFrame({
+    'ID': [1, 2, 3],
+    'Product': ['Asus', 'Lenovo', 'HP']
+})
+print(df)
