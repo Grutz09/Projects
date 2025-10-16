@@ -1,17 +1,21 @@
 import matplotlib as mpt
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import fiona
+fiona.supported_drivers['KML'] = 'rw'
+
+
 
 full_data = gpd.read_file(r"C:\Users\seanandrew\Desktop\kaggle_datasets\archive (3)\DEC_lands\DEC_lands\DEC_lands.shp")
 
 data = full_data.loc[:, ['CLASS', 'COUNTY', 'geometry']].copy()
 
 wild_lands = data.loc[data.CLASS.isin(['WILD FOREST', 'WILDERNESS'])].copy()
-# vsl = wild_lands.plot()
+vsl = wild_lands.plot()
 
-# print(wild_lands.geometry.head())
+print(wild_lands.geometry.head())
 
-#campsite
+# campsite
 POI_data = gpd.read_file(r"C:\Users\seanandrew\Desktop\kaggle_datasets\archive (3)\DEC_pointsinterest\DEC_pointsinterest\Decptsofinterest.shp")
 campsites = POI_data.loc[POI_data.ASSET == 'PRIMITIVE CAMPSITE'].copy()
 
@@ -29,6 +33,6 @@ wild_lands.plot(color='lightgreen', ax=ax)
 campsites.plot(color='brown', markersize= 2, ax=ax)
 trails.plot(color='black', markersize = 1, ax=ax) 
 
-plt.show()
 
+# PHL = gpd.read_file(r"C:\Users\seanandrew\Desktop\kaggle_datasets\archive (3)\Philippines_AL258.kml", driver='KML')
 
