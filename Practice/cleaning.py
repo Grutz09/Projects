@@ -18,4 +18,7 @@ df = pd.read_excel(r"C:\Users\seanandrew\Desktop\datasets\Customer Call List.xls
 # print(df["Last_Name"])
 
 df['Phone_Number'] = df["Phone_Number"].str.replace('[^0-9]','', regex=True)
-print(df['Phone_Number'])
+
+df["Phone_Number"] = df["Phone_Number"].apply(lambda x: str(x))
+df['Phone_Number'] = df['Phone_Number'].apply(lambda x: x[0:3] + '-' + x[3:6] + '-' + x[6:10])
+print(df["Phone_Number"])
