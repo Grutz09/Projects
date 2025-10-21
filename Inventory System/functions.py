@@ -43,4 +43,3 @@ def get_all_stock():
     for row in rows:
         print (f"ID: {row[0]}, Item: {row[1]}, Quantity: {row[2]}")
 
-get_all_stock()
