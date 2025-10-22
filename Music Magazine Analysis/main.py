@@ -30,5 +30,5 @@ fill_label = labels["label"].fillna('Unknown')
 ### REVIEWS
 missing_authorType = reviews['author_type'].isnull().sum()
 fill_auth_type = reviews['author_type'].fillna('contributor')
-print(reviews)
+print(reviews.info())
 # print(reviews.sort_values(by='reviewid',ascending=True))
