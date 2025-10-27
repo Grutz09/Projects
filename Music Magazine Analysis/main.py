@@ -23,13 +23,12 @@ df3 = df3.fillna('Unknown')
 df4.isnull().sum() #38 missing data from label column
 df4['label'] = df4["label"].fillna('Unknown')
 df4["label"] = df4["label"].str.title()
-print(df4.dtypes)
-
 
 ### REVIEWS
-missing_authorType = df5['author_type'].isnull().sum()
-fill_auth_type = df5['author_type'].fillna('contributor')
+df5.isnull().any()
+df5['author_type'] = df5["author_type"].fillna('Unkown')
+df5['artist'] = df5["artist"].str.title()
+df5['title'] = df5["title"].str.title()
 
-name = df5["author"].str.title()
-# print(name)
-# print(reviews.sort_values(by='reviewid',ascending=True))
+print(df5)
+
