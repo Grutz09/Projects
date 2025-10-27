@@ -2,33 +2,34 @@ import pandas as pd
 import sqlite3
 
 con = sqlite3.connect(r"C:\Users\seanandrew\Desktop\datasets\archive (4)\database.sqlite")
-artists = pd.read_sql("SELECT * FROM artists", con)
-content = pd.read_sql("SELECT * FROM content", con)
-genres = pd.read_sql("SELECT * FROM genres", con)
-labels = pd.read_sql("SELECT * FROM labels", con)
-reviews = pd.read_sql("SELECT * FROM reviews", con)
+df1 = pd.read_sql("SELECT * FROM artists", con)
+df2 = pd.read_sql("SELECT * FROM content", con)
+df3 = pd.read_sql("SELECT * FROM genres", con)
+df4 = pd.read_sql("SELECT * FROM labels", con)
+df5 = pd.read_sql("SELECT * FROM reviews", con)
 
 ### ARTISTS' TABLE
-missing_data = artists.isnull().sum()
-rm_duplicate = artists.drop_duplicates(inplace=True)
-artist_name = artists["artist"].str.title()
+df1 = df1.drop_duplicates().copy()
+df1["artist"] = df1["artist"].str.title()
 
 ### CONTENT'S TABLE
-missing = content.isnull().sum()
-drop_dupli = content.drop_duplicates()
-
+df2 = df2.drop_duplicates().copy()
 
 ### GENRES'S TABLE
-missing_data = genres.isnull().sum()
-fill_data = genres["genre"].fillna('Unkown')
+df3["genre"] = df3['genre'].str.title()
+df3 = df3.fillna('Unknown')
 
 ### LABELS
-print(labels)
-missing = labels.isnull().sum() #38 missing data from label column
-fill_label = labels["label"].fillna('Unknown')
+df4.isnull().sum() #38 missing data from label column
+df4['label'] = df4["label"].fillna('Unknown')
+df4["label"] = df4["label"].str.title()
+print(df4.dtypes)
+
 
 ### REVIEWS
-missing_authorType = reviews['author_type'].isnull().sum()
-fill_auth_type = reviews['author_type'].fillna('contributor')
-print(reviews.info())
+missing_authorType = df5['author_type'].isnull().sum()
+fill_auth_type = df5['author_type'].fillna('contributor')
+
+name = df5["author"].str.title()
+# print(name)
 # print(reviews.sort_values(by='reviewid',ascending=True))
