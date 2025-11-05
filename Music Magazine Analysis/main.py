@@ -38,31 +38,20 @@ df5['artist'] = df5["artist"].str.title()
 df5['title'] = df5["title"].str.title()
 df5 = df5.sort_values(by=['reviewid'], ascending=True)
 
-high_scores = df5['artist'].loc[df5.score >= 9.0] 
-mid_scores = df5['artist'].loc[df5.score >= 8.0]
-low_scores = df5['artist'].loc[df5.score < 7.0]
+high_scores = (df5.score >= 9.0).sum()
+mid_scores = ((df5.score >= 8.0) & (df5.score < 9.0)).sum()
+low_scores = (df5.score < 8.0).sum()
 
-min_len = min(len(high_scores), len(mid_scores), len(low_scores))
-high_scores = high_scores[:min_len]
-mid_scores = mid_scores[:min_len]
-low_scores = low_scores[:min_len]
+score_counts = pd.Series({
+    'High':high_scores,
+    'Mid':mid_scores,
+    'Low':low_scores
+})
 
-x = np.arange(len(high_scores))
-width = 0.25
-
-#plot the bar graph
-plt.bar(x - width, high_scores, width, label='High')
-plt.bar(x, mid_scores, width, label='Mid')
-plt.bar(x + width, low_scores, width, label='Low')
-
-
-#labels for x and y coordinates
-plt.xlabel("artists")
-plt.ylabel("scores")
-
-#title
-plt.title("Artist's Score")
-plt.legend()
+plt.bar(score_counts.index, score_counts.values, color=['steelblue', 'orange', 'green'])
+plt.title("Artist Score Distribution")
+plt.xlabel("Score Category")
+plt.ylabel("Number of Artists")
 plt.show()
 
 
