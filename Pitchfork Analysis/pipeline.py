@@ -46,9 +46,11 @@ merged_df['artist'] = merged_df['artist'].str.lower().str.replace(r'[^a-z0-9\s]'
 #Day 4 EDA Charts
 
 ## Score distribution
-plt.figure(figsize=(14, 5))
-plt.subplot(1,2,1)
-plt.hist(merged_df['score'], color='lightblue', ec='black', bins=15)
+score_counts = merged_df.groupby('pub_year')['score'].count()
+
+plt.figure(figsize=(14, 5)) 
+plt.subplot(2,2,1)
+plt.bar(score_counts.index, score_counts.values, edgecolor='black')
 plt.xlabel('scores')
 plt.ylabel('frequency')
 plt.title('Artist Score Distribution')
@@ -65,17 +67,25 @@ except Exception as e:
     raise ValueError(f"Invalid date format: {e}")
 
 #extract year
-merged_df['year'] =merged_df['pub_date'].dt.year
+merged_df['year'] = merged_df['pub_date'].dt.year
 
 #aggregate reviews per year
-reviews_per_year = merged_df.groupby('year')["reviewid"].count().reset_index()
+reviews_per_year = merged_df.groupby('pub_year')["reviewid"].count().reset_index()
 
 #plot
-plt.subplot(1,2,2)
-plt.bar(reviews_per_year['year'], reviews_per_year['reviewid'], color='skyblue', edgecolor='black')
+plt.subplot(2,2,2)
+plt.bar(reviews_per_year['pub_year'], reviews_per_year['reviewid'], color='lightgreen', edgecolor='black')
 plt.xlabel('Year')
 plt.ylabel('Number of Reviews')
 plt.title('Reviews Per Year')
+
+# Average score by year
+average_scores = merged_df.groupby('year')['score'].mean()
+
+plt.subplot(2,2,3)
+plt.bar(average_scores.index, average_scores.values, color='red', edgecolor='black')
+plt.xlabel('Year')
+plt.ylabel('Average Score')
 
 #show plot
 plt.tight_layout()
