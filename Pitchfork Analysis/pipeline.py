@@ -17,8 +17,6 @@ reviews['best_new_music'] = reviews['best_new_music'].astype('bool')
 reviews['best_new_music'] = reviews['best_new_music'].astype(int)
 reviews = reviews.drop_duplicates()
 
-
-
 #Day 2 Join Extra Tables
 merged_df = reviews.merge(artists, on='reviewid', how='left', suffixes=('', '_artist'))
 genres_combined = genres.groupby('reviewid')['genre'].apply(
@@ -30,15 +28,6 @@ merged_df = merged_df.merge(genres_combined, on='reviewid', how='left')
 #Day 3 Clean Merged Table
 merged_df['title'] = merged_df['title'].str.replace('--', '')
 merged_df['score'] = pd.to_numeric(merged_df['score'])
-
-### Removing Outlier (unresolved logic)
-# Q1 = merged_df['score'].quantile(0.25)
-# Q3 = merged_df['score'].quantile(0.75)
-
-# iqr = Q3 - Q1
-# lower_limit = Q1 - 1.5*iqr
-# upper_limit = Q3 + 1.5*iqr
-# print(merged_df[(merged_df['score'] < lower_limit) | (merged_df['score'] > upper_limit)].score)
 
 merged_df = merged_df[(merged_df['score'] >= 0) & (merged_df['score'] <= 10)]
 merged_df['artist'] = merged_df['artist'].str.lower().str.replace(r'[^a-z0-9\s]', '', regex=True)
@@ -88,5 +77,10 @@ plt.xlabel('Year')
 plt.ylabel('Average Score')
 
 #show plot
-plt.tight_layout()
-plt.show()
+# plt.tight_layout()
+# plt.show()
+
+#Artist Based Insight 
+artist_avg_score = merged_df.groupby(['artist']).score.mean()
+top_20_artist = merged_df.sort_values(by=['artist', 'score'], ascending=False)
+print(top_20_artist)
