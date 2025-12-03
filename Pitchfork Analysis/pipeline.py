@@ -82,5 +82,10 @@ plt.ylabel('Average Score')
 
 #Artist Based Insight 
 artist_avg_score = merged_df.groupby(['artist']).score.mean()
-top_20_artist = merged_df.sort_values(by=['artist', 'score'], ascending=False)
-print(top_20_artist)
+#first sort the artist by score from top to bottom
+sorted_artist = artist_avg_score.sort_values(ascending=False)
+top_20_artist = sorted_artist.iloc[0:20]
+bottom_20_artist = sorted_artist.iloc[-20:]
+
+##
+print(merged_df['artist'].duplicated().value_counts())
