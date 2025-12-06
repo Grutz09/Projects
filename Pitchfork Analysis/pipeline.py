@@ -87,5 +87,5 @@ sorted_artist = artist_avg_score.sort_values(ascending=False)
 top_20_artist = sorted_artist.iloc[0:20]
 bottom_20_artist = sorted_artist.iloc[-20:]
 
-##
-print(merged_df['artist'].duplicated().value_counts())
+## get the artist score
+print(merged_df.head())
