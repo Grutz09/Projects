@@ -88,4 +88,5 @@ top_20_artist = sorted_artist.iloc[0:20]
 bottom_20_artist = sorted_artist.iloc[-20:]
 
 ## get the artist score
-print(merged_df.head())
+mezzanine = merged_df[merged_df['artist'] == "massive attack"]
+print(mezzanine)
