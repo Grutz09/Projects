@@ -88,5 +88,12 @@ top_20_artist = sorted_artist.iloc[0:20]
 bottom_20_artist = sorted_artist.iloc[-20:]
 
 ## get the artist score
-mezzanine = merged_df[merged_df['artist'] == "massive attack"]
-print(mezzanine)
+filtered_artist = merged_df[merged_df['artist'] == "massive attack"]
+score_overtime = filtered_artist.groupby('pub_year')[['artist', 'score']].sum().reset_index()
+#plot
+plt.figure(figsize=(12, 6))
+plt.bar(score_overtime['pub_year'], score_overtime['score'], edgecolor='black')
+plt.xlabel('year')
+plt.ylabel('score')
+plt.tight_layout()
+plt.show()
