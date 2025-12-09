@@ -100,4 +100,13 @@ merged_df = merged_df[merged_df['genres'].notna() & (merged_df['genres'].str.str
 
 avg_score_genre = merged_df.groupby('genres')['score'].mean()
 reviews_per_genre = merged_df.groupby('genres')['reviewid'].count()
+
+plt.figure(figsize=(8,6))
+plt.plot(avg_score_genre.index, avg_score_genre.values, marker='o', linestyle = '-' )
+plt.title("Genre Trends")
+plt.xlabel("Genre")
+plt.ylabel("Y-axisAverage Score")
+plt.grid(True)
+plt.show()
+
 print(reviews_per_genre)
