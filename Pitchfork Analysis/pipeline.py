@@ -1,6 +1,8 @@
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
 
 # =======================  LOAD DATA  ===================================
 con = sqlite3.connect(r"C:\Users\seanandrew\Desktop\datasets\archive (4)\database.sqlite")
@@ -22,7 +24,7 @@ genres_combined = genres.groupby('reviewid')['genre'].apply(
     lambda x: ', '.join(x.dropna().astype(str))
 ).reset_index()
 
-print(merged_df.columns)
+# print(merged_df.columns)
 
 merged_df = merged_df.merge(genres_combined, on='reviewid', how='left')
 merged_df.to_csv('merged_raw.csv', index=False)
@@ -39,41 +41,41 @@ merged_df['artist'] = merged_df['artist'].str.lower().str.replace(r'[^a-z0-9\s]'
 # =======================  DAY 4 EDA  ====================================
 score_counts = merged_df.groupby('pub_year')['score'].count()
 
-plt.figure(figsize=(14, 5)) 
+# plt.figure(figsize=(14, 5)) 
 
-plt.subplot(2,2,1)
-plt.bar(score_counts.index, score_counts.values, edgecolor='black')
-plt.xlabel('scores')
-plt.ylabel('frequency')
-plt.title('Artist Score Distribution')
+# plt.subplot(2,2,1)
+# plt.bar(score_counts.index, score_counts.values, edgecolor='black')
+# plt.xlabel('scores')
+# plt.ylabel('frequency')
+# plt.title('Artist Score Distribution')
 
-# validate required columns
-required_cols = {"reviewid", "pub_date"}
-if not required_cols.issubset(merged_df.columns):
-    raise ValueError(f"Missing required columns: {required_cols - set(merged_df.columns)}")
+# # validate required columns
+# required_cols = {"reviewid", "pub_date"}
+# if not required_cols.issubset(merged_df.columns):
+#     raise ValueError(f"Missing required columns: {required_cols - set(merged_df.columns)}")
 
-# ensure datetime conversion
-try:
-    merged_df['pub_date'] = pd.to_datetime(merged_df['pub_date'], errors="raise")
-except Exception as e:
-    raise ValueError(f"Invalid date format: {e}")
+# # ensure datetime conversion
+# try:
+#     merged_df['pub_date'] = pd.to_datetime(merged_df['pub_date'], errors="raise")
+# except Exception as e:
+#     raise ValueError(f"Invalid date format: {e}")
 
-merged_df['year'] = merged_df['pub_date'].dt.year
+# merged_df['year'] = merged_df['pub_date'].dt.year
 
-reviews_per_year = merged_df.groupby('pub_year')["reviewid"].count().reset_index()
+# reviews_per_year = merged_df.groupby('pub_year')["reviewid"].count().reset_index()
 
-plt.subplot(2,2,2)
-plt.bar(reviews_per_year['pub_year'], reviews_per_year['reviewid'], color='lightgreen', edgecolor='black')
-plt.xlabel('Year')
-plt.ylabel('Number of Reviews')
-plt.title('Reviews Per Year')
+# plt.subplot(2,2,2)
+# plt.bar(reviews_per_year['pub_year'], reviews_per_year['reviewid'], color='lightgreen', edgecolor='black')
+# plt.xlabel('Year')
+# plt.ylabel('Number of Reviews')
+# plt.title('Reviews Per Year')
 
-average_scores = merged_df.groupby('year')['score'].mean()
+# average_scores = merged_df.groupby('year')['score'].mean()
 
-plt.subplot(2,2,3)
-plt.bar(average_scores.index, average_scores.values, color='red', edgecolor='black')
-plt.xlabel('Year')
-plt.ylabel('Average Score')
+# plt.subplot(2,2,3)
+# plt.bar(average_scores.index, average_scores.values, color='red', edgecolor='black')
+# plt.xlabel('Year')
+# plt.ylabel('Average Score')
 # plt.show()
 # =======================  ARTIST INSIGHTS ===============================
 artist_avg_score = merged_df.groupby(['artist']).score.mean()
@@ -101,12 +103,39 @@ merged_df = merged_df[merged_df['genres'].notna() & (merged_df['genres'].str.str
 avg_score_genre = merged_df.groupby('genres')['score'].mean()
 reviews_per_genre = merged_df.groupby('genres')['reviewid'].count()
 
-plt.figure(figsize=(8,6))
-plt.plot(avg_score_genre.index, avg_score_genre.values, marker='o', linestyle = '-' )
-plt.title("Genre Trends")
-plt.xlabel("Genre")
-plt.ylabel("Y-axisAverage Score")
-plt.grid(True)
-plt.show()
+# plt.figure(figsize=(8,6))
+# plt.plot(avg_score_genre.index, avg_score_genre.values, marker='o', linestyle = '-' )
+# plt.title("Genre Trends")
+# plt.xlabel("Genre")
+# plt.ylabel("Y-axisAverage Score")
+# plt.grid(True)
+# plt.show()
 
-print(reviews_per_genre)
+# print(reviews_per_genre)
+genre_dummies = pd.get_dummies(merged_df['genres'], prefix='genre')
+genre_dummies['reviewid'] = merged_df['reviewid'].values
+genre_features = genre_dummies.groupby('reviewid').sum()
+
+merged_df['author_type'] = pd.to_numeric(merged_df['author_type'], errors='coerce')
+merged_df['author_type'] = merged_df['author_type'].fillna(0).astype(int)
+
+# Include 'score' in the groupby!
+numeric_features = merged_df.groupby('reviewid')[['author_type', 'pub_year', 'pub_month', 'score']].first()
+
+final = pd.concat([numeric_features, genre_features], axis=1)
+x = final.drop('score', axis=1)
+y = final['score']
+
+x = x.fillna(0)
+print(x.shape)
+print(y.shape)
+
+# Better: use train_test_split instead of manual slicing
+from sklearn.model_selection import train_test_split
+train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2, random_state=42)
+
+# For scatter plot with multiple features, plot one feature at a time
+plt.scatter(train_x['pub_year'], train_y, alpha=0.5)
+plt.xlabel('Publication Year')
+plt.ylabel('Score')
+plt.show()
