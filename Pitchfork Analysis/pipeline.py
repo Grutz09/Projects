@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 
 # =======================  LOAD DATA  ===================================
 con = sqlite3.connect(r"C:\Users\seanandrew\Desktop\datasets\archive (4)\database.sqlite")
@@ -112,30 +113,20 @@ reviews_per_genre = merged_df.groupby('genres')['reviewid'].count()
 # plt.show()
 
 # print(reviews_per_genre)
-genre_dummies = pd.get_dummies(merged_df['genres'], prefix='genre')
-genre_dummies['reviewid'] = merged_df['reviewid'].values
-genre_features = genre_dummies.groupby('reviewid').sum()
 
-merged_df['author_type'] = pd.to_numeric(merged_df['author_type'], errors='coerce')
-merged_df['author_type'] = merged_df['author_type'].fillna(0).astype(int)
+# ======================= ML-ready Dataset  ========================
+genre_features = pd.get_dummies(merged_df['genres'], columns=['genres'], drop_first=True)
 
-# Include 'score' in the groupby!
-numeric_features = merged_df.groupby('reviewid')[['author_type', 'pub_year', 'pub_month', 'score']].first()
+numeric = pd.to_numeric(merged_df['author_type'], errors='coerce').fillna(0)
+year = merged_df['pub_year']
+month = merged_df['pub_month']
 
-final = pd.concat([numeric_features, genre_features], axis=1)
-x = final.drop('score', axis=1)
-y = final['score']
+x = pd.concat([genre_features, numeric, year, month], axis=1)
+y = merged_df['score']
 
-x = x.fillna(0)
-print(x.shape)
-print(y.shape)
+x_train, y_train, x_test, y_test = train_test_split(x, y, test_size=0.4, random_state=1)
 
-# Better: use train_test_split instead of manual slicing
-from sklearn.model_selection import train_test_split
-train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2, random_state=42)
+log_reg = LogisticRegression(max_iter=200)
+log_reg.fit(x_train, y_train)
 
-# For scatter plot with multiple features, plot one feature at a time
-plt.scatter(train_x['pub_year'], train_y, alpha=0.5)
-plt.xlabel('Publication Year')
-plt.ylabel('Score')
-plt.show()
+y_predict = log_reg.predict(x_test)
