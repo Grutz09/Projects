@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # =======================  LOAD DATA  ===================================
 con = sqlite3.connect(r"C:\Users\seanandrew\Desktop\datasets\archive (4)\database.sqlite")
@@ -80,7 +81,7 @@ plt.subplot(2,2,3)
 plt.bar(average_scores.index, average_scores.values, color='red', edgecolor='black')
 plt.xlabel('Year')
 plt.ylabel('Average Score')
-plt.show()
+# plt.show()
 # =======================  ARTIST INSIGHTS ===============================
 artist_avg_score = merged_df.groupby(['artist']).score.mean()
 
@@ -111,25 +112,39 @@ plt.figure(figsize=(8,6))
 plt.plot(avg_score_genre.index, avg_score_genre.values, marker='o', linestyle = '-' )
 plt.title("Genre Trends")
 plt.xlabel("Genre")
-plt.ylabel("Y-axisAverage Score")
+plt.ylabel("Average Score")
 plt.grid(True)
 # plt.show()
 
 print(reviews_per_genre)
 
 # ======================= ML-ready Dataset  ========================
-genre_features = pd.get_dummies(merged_df['genres'], columns=['genres'], drop_first=True)
-
+genre_features = pd.get_dummies(merged_df['genres'], columns=['genres'], drop_first=True).astype(int)
 numeric = pd.to_numeric(merged_df['author_type'], errors='coerce').fillna(0)
 year = merged_df['pub_year']
 month = merged_df['pub_month']
+merged_df['score'] = merged_df['score'].dropna().fillna(0)
 
-x = pd.concat([genre_features, numeric, year, month], axis=1)
+print(genre_features.shape)
+print(year.shape)
+print(month.shape)
+print(merged_df['score'].shape)
+X = pd.concat([genre_features, numeric, year, month], axis=1)
 y = merged_df['score']
+print(X.shape)
+print(y.shape)
 
-x_train, y_train, x_test, y_test = train_test_split(x, y, test_size=0.4, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=1
+    )
 
-log_reg = LogisticRegression(max_iter=200)
-log_reg.fit(x_train, y_train)
+print(f"Training set size: {X_train.shape[0]}")
+print(f"Testing set size: {X_test.shape[0]}")
 
-y_predict = log_reg.predict(x_test)
+model = LinearRegression()
+model.fit(X_train, y_train)
+print(f"Intercept:,{ model.intercept_}")
+print(f"Coefficient:, {model.coef_}")
+
