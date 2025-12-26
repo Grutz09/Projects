@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+import numpy as np
 
 # =======================  LOAD DATA  ===================================
 con = sqlite3.connect(r"C:\Users\seanandrew\Desktop\datasets\archive (4)\database.sqlite")
@@ -125,19 +126,16 @@ year = merged_df['pub_year']
 month = merged_df['pub_month']
 merged_df['score'] = merged_df['score'].dropna().fillna(0)
 
-print(genre_features.shape)
-print(year.shape)
-print(month.shape)
 print(merged_df['score'].shape)
 X = pd.concat([genre_features, numeric, year, month], axis=1)
 y = merged_df['score']
-print(X.shape)
-print(y.shape)
 
+print(f"Missing value in X: {X.isnull().sum()}")
+print(f"Missing value in y: {y.isnull().sum()}")
 X_train, X_test, y_train, y_test = train_test_split(
     X, y,
     test_size=0.2,
-    random_state=1
+    random_state=42
     )
 
 print(f"Training set size: {X_train.shape[0]}")
@@ -148,3 +146,31 @@ model.fit(X_train, y_train)
 print(f"Intercept:,{ model.intercept_}")
 print(f"Coefficient:, {model.coef_}")
 
+# ======================== Evaluate Performance ===============================
+y_pred = model.predict(X_test)
+
+#calculate metrics
+r2 = r2_score(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+mae =  mean_absolute_error(y_test, y_pred)
+
+print(f"Model Performance:")
+print(f"R2 score: {r2:.3f}")
+print(f"RMSE: {rmse:.3f}")
+print(f"Mean: {mae:.3f}")
+
+
+predictions = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+print(predictions.head())
+
+#plot the actual data points
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+
+#plot the reggression line
+plt.plot([y_test.min(), y_test.max()], [], color='black', label='Regression Line')
+
+plt.xlabel('review score')
+plt.ylabel('score')
+plt.title('Linear Regression')
+plt.legend()
+plt.show()
