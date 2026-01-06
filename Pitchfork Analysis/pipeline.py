@@ -26,7 +26,7 @@ reviews = reviews.drop_duplicates()
 # ======================= MERGING  =================================
 merged_df = reviews.merge(artists, on='reviewid', how='left', suffixes=('', '_artist'))
 
-# combine genres per reviewid → "rock, pop, indie"
+# combine genres per reviewid - "rock, pop, indie"
 genres_combined = genres.groupby('reviewid')['genre'].apply(
     lambda x: ', '.join(x.dropna().astype(str))
 ).reset_index()
