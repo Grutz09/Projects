@@ -44,80 +44,98 @@ merged_df['artist'] = merged_df['artist'].str.lower().str.replace(r'[^a-z0-9\s]'
 merged_df['pub_date'] = pd.to_datetime(merged_df['pub_date'])
 merged_df['year'] = merged_df['pub_date'].dt.year
 merged_df['month'] = merged_df['pub_date'].dt.month
+merged_df['artist'] = merged_df['artist'].dropna()
+merged_df = merged_df[merged_df['artist'].notna() & (merged_df['artist'].str.strip() != "")]
+
+# ======================= Score Distribution Analysis ================================
+#data for histogram
+review_score = merged_df.groupby('reviewid')['score'].mean().astype(int)
+year = merged_df['year']
+
+#plotting basic histogram
+# plt.figure(6,6)
+plt.hist(review_score, bins=20, color='blue', edgecolor='black')
+
+#adding labels and title
+plt.xlabel('Score')
+plt.ylabel('Review Counts')
+plt.title('Review Score')
+
+plt.show()
 
 # ======================= PREVENT DATA LEAKAGE ===========================
-unique_reviews = merged_df.drop_duplicates(subset='reviewid')
+# unique_reviews = merged_df.drop_duplicates(subset='reviewid')
 
-train_ids, test_ids = train_test_split(
-    unique_reviews['reviewid'],
-    test_size= 0.2,
-    random_state=42
-)
+# train_ids, test_ids = train_test_split(
+#     unique_reviews['reviewid'],
+#     test_size= 0.2,
+#     random_state=42
+# )
 
-train_df = merged_df[merged_df['reviewid'].isin(train_ids)].copy()
-test_df = merged_df[merged_df['reviewid'].isin(test_ids)].copy()
+# train_df = merged_df[merged_df['reviewid'].isin(train_ids)].copy()
+# test_df = merged_df[merged_df['reviewid'].isin(test_ids)].copy()
 
 # ======================= GENRE ENCODING ================================
-train_df['genres'] = train_df['genre'].str.split(', ')
-test_df['genres'] = test_df['genre'].str.split(', ')
+# train_df['genres'] = train_df['genre'].str.split(', ')
+# test_df['genres'] = test_df['genre'].str.split(', ')
 
-train_df = train_df.explode('genres')
-test_df = test_df.explode('genres')
+# train_df = train_df.explode('genres')
+# test_df = test_df.explode('genres')
 
-genre_dummies_train = pd.get_dummies(train_df['genres'], prefix='genre')
-genre_dummies_test = pd.get_dummies(test_df['genres'], prefix='genre')
+# genre_dummies_train = pd.get_dummies(train_df['genres'], prefix='genre')
+# genre_dummies_test = pd.get_dummies(test_df['genres'], prefix='genre')
 
-#align columns
-genre_dummies_train, genre_dummies_test = genre_dummies_train.align(
-    genre_dummies_test, join='left', axis=1, fill_value=0
-)
+# #align columns
+# genre_dummies_train, genre_dummies_test = genre_dummies_train.align(
+#     genre_dummies_test, join='left', axis=1, fill_value=0
+# )
 
 # ======================= FEATURES AND TARGET ================================
-X_train = pd.concat([
-    genre_dummies_train,
-    train_df[['year', 'month']]
-    ], axis=1)
+# X_train = pd.concat([
+#     genre_dummies_train,
+#     train_df[['year', 'month']]
+#     ], axis=1)
 
-X_test = pd.concat([
-    genre_dummies_test,
-    test_df[['year', 'month']]
-    ], axis=1
-)
+# X_test = pd.concat([
+#     genre_dummies_test,
+#     test_df[['year', 'month']]
+#     ], axis=1
+# )
 
-y_train = train_df['score']
-y_test = test_df['score']
+# y_train = train_df['score']
+# y_test = test_df['score']
 
 # ======================= MODEL PIPELINE ================================
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),
-    ('model', RandomForestRegressor(
-        n_estimators=200,
-        random_state=42,
-        n_jobs=1))
-])
+# pipeline = Pipeline([
+#     ('scaler', StandardScaler()),
+#     ('model', RandomForestRegressor(
+#         n_estimators=200,
+#         random_state=42,
+#         n_jobs=1))
+# ])
 
-pipeline.fit(X_train, y_train)
+# pipeline.fit(X_train, y_train)
 
-# ======================= EVALUATION ====================================
-y_pred = pipeline.predict(X_test)
+# # ======================= EVALUATION ====================================
+# y_pred = pipeline.predict(X_test)
 
-r2 = r2_score(y_test, y_pred)
-rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-mae = mean_absolute_error(y_test, y_pred)
+# r2 = r2_score(y_test, y_pred)
+# rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+# mae = mean_absolute_error(y_test, y_pred)
 
-print("Model Performance")
-print(f"R2 Score : {r2:.3f}")
-print(f"RMSE     : {rmse:.3f}")
-print(f"MAE      : {mae:.3f}")
+# print("Model Performance")
+# print(f"R2 Score : {r2:.3f}")
+# print(f"RMSE     : {rmse:.3f}")
+# print(f"MAE      : {mae:.3f}")
 
 # ======================= VISUALIZATION ====================================
-plt.figure(figsize=(6,6))
-plt.scatter(y_test, y_pred, alpha=0.5)
-plt.plot([0,10], [0,10], 'k--')
-plt.xlabel("Actual Score")
-plt.ylabel("Predicted Score")
-plt.title("Review Score Prediction")
-plt.show()
+# plt.figure(figsize=(6,6))
+# plt.scatter(y_test, y_pred, alpha=0.5)
+# plt.plot([0,10], [0,10], 'k--')
+# plt.xlabel("Actual Score")
+# plt.ylabel("Predicted Score")
+# plt.title("Review Score Prediction")
+# plt.show()
 
 # # =======================  DAY 4 EDA  ====================================
 # score_counts = merged_df.groupby('pub_year')['score'].count()
