@@ -49,18 +49,40 @@ merged_df = merged_df[merged_df['artist'].notna() & (merged_df['artist'].str.str
 
 # ======================= Score Distribution Analysis ================================
 #data for histogram
-review_score = merged_df.groupby('reviewid')['score'].mean().astype(int)
-year = merged_df['year']
+
+#
+review_score = merged_df.groupby('artist')['score'].mean()
+
+genre_score = merged_df.groupby('genre')['score'].max()
+
+yearly_score = merged_df.groupby('pub_year')['score'].mean()
+
 
 #plotting basic histogram
-# plt.figure(6,6)
+plt.figure(figsize=(12,8))
+plt.subplot(2,2,1)
 plt.hist(review_score, bins=20, color='blue', edgecolor='black')
 
 #adding labels and title
 plt.xlabel('Score')
-plt.ylabel('Review Counts')
-plt.title('Review Score')
+plt.ylabel('Artist Counts')
+plt.title('Artist Score')
 
+plt.subplot(2,2,2)
+plt.hist(genre_score, bins=20, color='red', edgecolor='black')
+#adding labels and title
+plt.xlabel('Score')
+plt.ylabel('Frequency')
+plt.title('Genre Score')
+
+plt.subplot(2,2,3)
+plt.plot(yearly_score.index,yearly_score.values, color='green')
+#adding labels and title
+plt.xlabel('Year')
+plt.ylabel('Average Score')
+plt.title('Yearly Score')
+
+plt.tight_layout()
 plt.show()
 
 # ======================= PREVENT DATA LEAKAGE ===========================
