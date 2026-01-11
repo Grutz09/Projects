@@ -46,12 +46,11 @@ merged_df['year'] = merged_df['pub_date'].dt.year
 merged_df['month'] = merged_df['pub_date'].dt.month
 merged_df['artist'] = merged_df['artist'].dropna()
 merged_df = merged_df[merged_df['artist'].notna() & (merged_df['artist'].str.strip() != "")]
+merged_df = merged_df[merged_df['genre'].notna() & (merged_df['genre'].str.strip() != "")]
 
 # ======================= Score Distribution Analysis ================================
 #data for histogram
-
-#
-review_score = merged_df.groupby('artist')['score'].mean()
+artists_score = merged_df.groupby('artist')['score'].mean()
 
 genre_score = merged_df.groupby('genre')['score'].max()
 
@@ -61,7 +60,7 @@ yearly_score = merged_df.groupby('pub_year')['score'].mean()
 #plotting basic histogram
 plt.figure(figsize=(12,8))
 plt.subplot(2,2,1)
-plt.hist(review_score, bins=20, color='blue', edgecolor='black')
+plt.hist(artists_score, bins=20, color='blue', edgecolor='black')
 
 #adding labels and title
 plt.xlabel('Score')
@@ -83,9 +82,35 @@ plt.ylabel('Average Score')
 plt.title('Yearly Score')
 
 plt.tight_layout()
+# plt.show()
+
+# ======================= Top Artist and Genres ================================
+#most reviewed artist
+artists_score = merged_df.groupby('artist')['reviewid'].count()
+top_genres = merged_df.groupby('genre')['genre'].count()
+
+average_genre_score = merged_df.groupby('genre')['score'].mean()
+
+top10_artist = artists_score.sort_values(ascending=False)
+top10_artist = top10_artist.iloc[0:10]
+
+# ======================= Trends Over Time ================================
+reviews_per_year = merged_df.groupby('reviewid')['pub_year'].count()
+reviews_per_year = reviews_per_year.sort_values(ascending=False)
+
+average_score_per_year = merged_df.groupby('year')['score'].mean()
+
+plt.figure(figsize=(6,6))
+plt.plot(average_score_per_year.index, average_score_per_year.values, color='blue')
+
+plt.xlabel('Year')
+plt.ylabel('Avg Score')
+plt.title('Average Score Per Year')
+plt.tight_layout()
 plt.show()
 
 # ======================= PREVENT DATA LEAKAGE ===========================
+
 # unique_reviews = merged_df.drop_duplicates(subset='reviewid')
 
 # train_ids, test_ids = train_test_split(
