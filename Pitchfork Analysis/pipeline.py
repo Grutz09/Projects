@@ -109,6 +109,12 @@ plt.title('Average Score Per Year')
 plt.tight_layout()
 plt.show()
 
+# ================= Score Category Prediction (Classification) ====================
+merged_df['artist'] = merged_df.groupby('artist')['reviewid'].count().copy()
+y = merged_df['score']
+
+score_features = ['genre', 'pub_year', 'artist']
+
 # ======================= PREVENT DATA LEAKAGE ===========================
 
 # unique_reviews = merged_df.drop_duplicates(subset='reviewid')

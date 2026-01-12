@@ -5,56 +5,82 @@
         <meta name="author" content="Jude Grutas">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title> My First Web Page</title>
-        <link rel="icon" href="html5.png" type="image/x-icon">
+        <link rel="icon" href="img/html5.png" type="image/x-icon">
         <link rel="stylesheet" href="main.css" type="text/css">
     </head>
 
     <body>
         <h1>Hello World!</h1>
-        <hr>
-
-        <h2>I'm Ready to learn HTML</h2>
-        <p>This is my first web page in a while.</p>
-
-        <h3>My Daily Schedule</h3>
-        <p>Let me tell you how:</p>
-        <ol>
-            <li>... I learn more about web dev. </li>
-            <li>... I plan out my schedule.</li>
-            <li>... I use resources from <abbr title="Mozilla Developer Network">
-                <a href="https://developer.mozilla.org/en-US/">MDN</a></abbr>.</li>
-        </ol>
 
         <hr>
 
-        <h2>I Am Also Planning A Vacation</h2>
-        <p>I've always been in my home country and never really travelled <em>outside</em>.</p>
-        <p>I live in <abbr title="Philippines">PH</abbr> and it's a very tropical country where almost all year round it's raining.</p>
+        <!-- navigation to different sections -->
+        <nav>
+            <ul>
+                <li>
+                    <a href="#html">Learn HTML</a>
+                </li>
+                <li>
+                    <a href="#vacation">Plannning a Vacation</a>
+                </li>
+            </ul>
+        </nav>
 
-        <h3>Places I'd Like To Visit</h3>
-        <ul>
-            <li><p>I've heard good things about Vietnam like:</p></li>
-            <!-- Address should be specific like which strt is it on maps -->
-            <li>
-                <p>3 great places in vietnam</p>
-                <address>
-                    Hanoi,<br>
-                    Da Lat,<br>
-                    Hoi An<br>
-                </address>
-            </li>
-        </ul>
-        <p>Anywhere peaceful, <strong>As long as there's not much people</strong>.</p>
+        <hr>
 
-        <h3>Places I Want to Avoid</h3>
-        <dl>
-            <dt>India</dt>
-            <dd>I hear and saw that this country is <strong>very unhygienic</strong>!</dd>
+        <section id="html">
+            <h2>I'm Ready to learn HTML</h2>
+            <p>This is my first web page in a while.</p>
+            <img src="img/html5.png" alt="html5 logo" title="I am learning HTML5" width="290" height="300">
 
-            <dt>Israel</dt>
-            <dd>Their country always want to start a war in the name of Religion</dd>
-        </dl>
+            <h3>My Daily Schedule</h3>
+            <p>Let me tell you how:</p>
+            <ol>
+                <li>... I learn more about web dev. </li>
+                <li>... I plan out my schedule.</li>
+                <li>... I use resources from <abbr title="Mozilla Developer Network">
+                    <a href="https://developer.mozilla.org/en-US/">MDN</a></abbr>.</li>
+            </ol>
+        </section>
+
+        <hr>
+
+        <section  id="vacation">
+            <h2>I Am Also Planning A Vacation</h2>
+            <p>I've always been in my home country and never really travelled <em>outside</em>.</p>
+            <p>I live in <abbr title="Philippines">PH</abbr> and it's a very tropical country where almost all year round it's raining.</p>
+
+            <h3>Places I'd Like To Visit</h3>
+            <ul>
+                <li><p>I've heard good things about Vietnam like:</p></li>
+                <!-- Address should be specific like which strt is it on maps -->
+                <li>
+                    <p>3 great places in vietnam</p>
+                    <img src="img/vietnamese-culture-festival.webp" alt="Vietnam Culture" title="I want to experience a vietnam culture" width="800" height="500">
+                    <address>
+                        Hanoi,<br>
+                        Da Lat,<br>
+                        Hoi An<br>
+                    </address>
+                </li>
+            </ul>
+            <p>Anywhere peaceful, <strong>As long as there's not much people</strong>.</p>
+
+            <h3>Places I Want to Avoid</h3>
+            <dl>
+                <dt>India</dt>
+                <dd>I hear and saw that this country is <strong>very unhygienic</strong>!</dd>
+
+                <dt>Israel</dt>
+                <dd>Their country always want to start a war in the name of Religion</dd>
+            </dl>
+        </section>
+
         <hr>
         &lt;&lt;&lt; &copy; <a href="about.html">Jude Grutas</a> &gt;&gt;&gt;
+
+        <p>
+            <a href="#">Back to Top</a>
+        </p>
     </body>
 </html>
