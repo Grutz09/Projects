@@ -95,12 +95,12 @@ top10_artist = artists_score.sort_values(ascending=False)
 top10_artist = top10_artist.iloc[0:10]
 
 # ======================= Trends Over Time ================================
-reviews_per_year = merged_df.groupby('reviewid')['pub_year'].count()
+reviews_per_year = merged_df.groupby('pub_year')['reviewid'].count()
 reviews_per_year = reviews_per_year.sort_values(ascending=False)
 
-average_score_per_year = merged_df.groupby('year')['score'].mean()
+average_score_per_year = merged_df.groupby('pub_year')['score'].mean()
 
-plt.figure(figsize=(6,6))
+plt.figure(figsize=(10,6))
 plt.plot(average_score_per_year.index, average_score_per_year.values, color='blue')
 
 plt.xlabel('Year')
@@ -113,6 +113,7 @@ plt.show()
 merged_df['artist'] = merged_df.groupby('artist')['reviewid'].count().copy()
 y = merged_df['score']
 
+print(merged_df.info())
 score_features = ['genre', 'pub_year', 'artist']
 
 # ======================= PREVENT DATA LEAKAGE ===========================
