@@ -95,17 +95,19 @@ top10_artist = artists_score.sort_values(ascending=False)
 top10_artist = top10_artist.iloc[0:10]
 
 # ======================= Trends Over Time ================================
-reviews_per_year = merged_df.groupby('pub_year')['reviewid'].count()
+
+#find out the trend for reviews per year
+reviews_per_year = merged_df.groupby('pub_year')['reviewid'].mean()
 reviews_per_year = reviews_per_year.sort_values(ascending=False)
 
 average_score_per_year = merged_df.groupby('pub_year')['score'].mean()
 
 plt.figure(figsize=(10,6))
-plt.plot(average_score_per_year.index, average_score_per_year.values, color='blue')
+plt.plot(reviews_per_year.index, reviews_per_year.values, color='blue')
 
 plt.xlabel('Year')
-plt.ylabel('Avg Score')
-plt.title('Average Score Per Year')
+plt.ylabel('review counts')
+plt.title('Reviews Per Year')
 plt.tight_layout()
 plt.show()
 
