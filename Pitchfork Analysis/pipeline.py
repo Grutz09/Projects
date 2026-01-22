@@ -98,7 +98,7 @@ top10_artist = top10_artist.iloc[0:10]
 
 #find out the trend for reviews per year
 reviews_per_year = merged_df.groupby('pub_year')['reviewid'].mean()
-reviews_per_year = reviews_per_year.sort_values(ascending=False)
+reviews_per_year = reviews_per_year.sort_index(ascending=False)
 
 average_score_per_year = merged_df.groupby('pub_year')['score'].mean()
 
@@ -109,15 +109,38 @@ plt.xlabel('Year')
 plt.ylabel('review counts')
 plt.title('Reviews Per Year')
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 # ================= Score Category Prediction (Classification) ====================
-merged_df['artist'] = merged_df.groupby('artist')['reviewid'].count().copy()
-y = merged_df['score']
+unique_reviews = merged_df.drop_duplicates(subset='reviewid')
 
-print(merged_df.info())
-score_features = ['genre', 'pub_year', 'artist']
+train_ids, test_ids = train_test_split(
+    unique_reviews['reviewid'],
+    test_size=0.2,
+    random_state=42
+)
 
+train_df = merged_df[merged_df['reviewid'].isin(train_ids)].copy()
+test_df = merged_df[merged_df['reviewid'].isin(test_ids)].copy()
+
+train_df['genre'] = train_df['genre'].str.split(', ')
+test_df['genre'] = test_df['genre'].str.split(', ')
+
+train_df = train_df.explode('genre')
+test_df = test_df.explode('genre')
+
+dummy_train = pd.get_dummies(train_df['genre'], prefix='genre')
+dummy_test = pd.get_dummies(test_df['genre'], prefix='genre')
+
+dummy_train, dummy_test = dummy_train.align(dummy_test, join='left', axis=1, fill_value=0)
+
+X_train = pd.concat([dummy_train,train_df[['pub_year', 'pub_month']]],axis=1)
+X_test = pd.concat([dummy_test, test_df[['pub_year', 'pub_month']]],axis=1)
+
+y_train = train_df['score']
+y_test = test_df['score']
+
+print(X_train.describe())
 # ======================= PREVENT DATA LEAKAGE ===========================
 
 # unique_reviews = merged_df.drop_duplicates(subset='reviewid')
