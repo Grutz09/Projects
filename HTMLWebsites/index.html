@@ -23,6 +23,10 @@
                     <li>
                         <a href="#vacation">Plannning a Vacation</a>
                     </li>
+                    <li>
+                        <a href="#contact">Contact Me</a>
+                    </li>
+                    
                 </ul>
             </nav>
         </header>
@@ -74,14 +78,18 @@
                         <caption>
                             Daily Schedule
                         </caption>
+
                         <thead>
                             <tr>
-                                <th>Time</th>
-                                <th>Activity</th>
+                                <th>&nbsp;</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Activity</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <tr>
+                                <th rowspan="2">Afternoon</th>
                                 <td>
                                     <time datetime="01:00">1 pm </time>-<time datetime="03:00"> 3 pm</time>
                                 </td>
@@ -94,6 +102,7 @@
                                 <td>Chill & Snacks</td>
                             </tr>
                             <tr>
+                                <th>Evening</th>
                                 <td>
                                     <time datetime="04:00">4 pm </time>-<time datetime="06:00"> 6 pm</time>
                                 </td>
@@ -163,6 +172,102 @@
                     </dl>
 
                 </section>
+            </article>
+
+            <hr>
+
+            <article id="Contact">
+                <h2>Contact Me</h2>
+                <p>I'd really like to hear from you!</p>
+
+                <form action="https://httpbin.org/get" method="get">
+                    <fieldset>
+                        <legend>Personal Info</legend>
+                        <p>
+                            <label for="firstName">First Name:</label>
+                            <input type="text" name="firstName" id="firstName" placeholder="John" autocomplete="on" required autofocus>
+                        </p>
+
+                        <p>
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" name="lastName" id="lastName" placeholder="Doe" autocomplete="on" required autofocus>
+                        </p>
+
+                        <p>
+                            <label for="password">Password:</label>
+                            <input type="password" name="password" id="password" placeholder="XXXXXXX" required>
+                        </p>
+
+                        <p>
+                            <label for="phone">Phone:</label>
+                            <input type="tel" name="phone" id="phone" placeholder="2134-321-123" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" required>
+                        </p>
+
+                        <p>
+                            <label for="decade">Favorite Decade:</label>
+                            <input type="number" name="decade" id="decade" min="1950" max="2030" step="10" value="1980">
+                        </p>
+
+                        <p>
+                            <label for="coffee">Favorite Coffee:</label>
+                            <select name="coffee" id="coffee">
+                                <optgroup label="Coffees">
+                                    <option value="regular coffee">Regular Coffee</option>
+                                    <option value="iced coffee">Iced Coffee</option>
+                                </optgroup>
+
+                                <optgroup label="Espresso Drinks">
+                                    <option value="Iced Latte">Iced Latte</option>
+                                    <option value="Capuccino">Capuccino</option>
+                                    <option value="Americano">Americano</option>
+                                </optgroup>
+
+                                <option value="other">Other</option>
+                            </select>
+                        </p>
+
+                        <!-- <p>
+                            <label for="coffee">Favorite Coffee</label>
+                            <input type="text" name="coffee" id="coffee" list="coffee-list">
+                            <datalist id="coffee-list">
+                                <option value="coffee">
+                                <option value="latte">
+                                <option value="espresso">
+                                <option value="cortado">
+                                <option value="americano">
+                                <option value="other">
+                            </datalist>
+                        </p> -->
+                    </fieldset>
+
+                    <br>
+
+                    <fieldset>
+                        <legend>What is your Favorite Food?</legend>
+                        <p>
+                            <input type="radio" name="Food" id="tacos" value="tacos">
+                            <label for="tacos">Tacos</label>
+                        </p>
+                        <p>
+                            <input type="radio" name="Food" id="pizza" value="pizza">
+                            <label for="pizza">Tacos</label>
+                        </p>
+                        <p>
+                            <input type="radio" name="Food" id="shawarma" value="shawarma">
+                            <label for="shawarma">Shawarma</label>
+                        </p>
+                    </fieldset>
+
+                    <br>
+
+                    <fieldset>
+                        <legend>Do you have pets?</legend>
+                        <p>
+                            <input type="checkbox" name="pets" id="dog" value="dog">
+                            <label for="dog">Dog</label>
+                        </p>
+                    </fieldset>
+                </form>
             </article>
         </main>
 
