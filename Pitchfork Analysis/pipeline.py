@@ -51,6 +51,15 @@ print(genre_score.describe())
 genre_pubyear = pd.merge(genres, reviews[['pub_year', 'reviewid']])
 num_genres_year = genre_pubyear.groupby(['pub_year', 'genre']).agg({'reviewid': 'count'}).unstack()
 
+num_genres_year.column = num_genres_year.columns.get_level_values(1)
 total_genre_year = num_genres_year.sum(axis=1)
 
-print(num_genres_year)
+plt.figure(figsize=(12,6))
+plt.plot(num_genres_year.index, num_genres_year.values, linestyle='--')  
+ 
+plt.legend(["electronic", "experimental","folk/country", "global","jazz", "metal","pop/r&b", "rap", "rock"], loc='best')
+plt.title("Genre Reviews Distribution")
+plt.xlabel("Year")
+plt.ylabel("Reviews")
+plt.show()
+
