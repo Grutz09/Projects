@@ -47,6 +47,7 @@ FROM reviews
 genre_score = pd.read_sql(query, con)
 print(genre_score.describe())
 
+
 genre_pubyear = pd.merge(genres, reviews[['pub_year', 'reviewid']])
 num_genres_year = genre_pubyear.groupby(['pub_year', 'genre']).agg({'reviewid': 'count'}).unstack()
 
