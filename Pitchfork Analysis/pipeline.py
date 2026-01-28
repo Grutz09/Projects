@@ -20,7 +20,7 @@ artists = pd.read_sql("SELECT * FROM artists", con)
 genres = pd.read_sql("SELECT * FROM genres", con)
 years = pd.read_sql("SELECT * FROM years", con)
 
-# ======================= Data Processing ===============================
+# ======================= Descriptive Analysis ===============================
 # let's drop null values and columns that are not necessary to the data we want to get
 genres = genres.dropna().fillna(0)
 reviews = reviews.drop(['author_type', 'url'], axis=1, inplace=False)
@@ -44,6 +44,7 @@ num_genres_year = genre_pubyear.groupby(['pub_year', 'genre']).agg({'reviewid': 
 num_genres_year.columns = num_genres_year.columns.get_level_values(1)
 total_genre_year = num_genres_year.sum(axis=1)
 
+#calculate percentage of each genre after summing up
 ratio_total_genre_year = num_genres_year.divide(total_genre_year, axis=0)*100
 
 # plt.figure(figsize=(12,6))
@@ -53,11 +54,19 @@ ratio_total_genre_year = num_genres_year.divide(total_genre_year, axis=0)*100
 # plt.xlabel("Year")
 # plt.ylabel("Reviews")
 
-#ratio of genre
-ax = sn.lineplot(data=ratio_total_genre_year)
-ax.set_xlabel('Year Review was Published')
-ax.set_ylabel('Percentage')
-ax.set_title('Percentage of Each Genre each Year')
-ax.legend(loc='right', bbox_to_anchor = (1.4, 0.5))
-plt.tight_layout()
-plt.show()
+#percentage of genre
+# ax = sn.lineplot(data=ratio_total_genre_year)
+# ax.set_xlabel('Year Review was Published')
+# ax.set_ylabel('Percentage')
+# ax.set_title('Percentage of Each Genre each Year')
+# ax.legend(loc='right', bbox_to_anchor = (1.4, 0.5))
+# plt.tight_layout()
+# plt.show()
+
+# =================== ARTIST BASED INSIGHT =================
+
+#let's find out how many best music is there for each artists
+reviews['artist'] = reviews['artist'].str.replace(' ', '')
+grouped_artist = reviews.groupby(['artist'])['best_new_music'].count()
+
+print(grouped_artist)
