@@ -65,8 +65,12 @@ ratio_total_genre_year = num_genres_year.divide(total_genre_year, axis=0)*100
 
 # =================== ARTIST BASED INSIGHT =================
 
-#let's find out how many best music is there for each artists
-reviews['artist'] = reviews['artist'].str.replace(' ', '')
-grouped_artist = reviews.groupby(['artist'])['best_new_music'].count()
+#let's find out how many best new music is there for every artists
+# sorted_artists = reviews.sort_values('best_new_music', ascending=False)
+artist_bestmusic_count = reviews.groupby('artist')['best_new_music'].count()
 
-print(grouped_artist)
+sorted_artist = artist_bestmusic_count.sort_values( 'best_new_music', ascending=False)
+
+top_10 = sorted_artist.iloc[0:9]
+print(top_10.head())
+sn.barplot()
