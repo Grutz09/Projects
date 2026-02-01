@@ -30,13 +30,13 @@ s = reviews.groupby('score')
 score_agg = s['best_new_music'].agg(['sum', 'count']).reset_index()
 print(score_agg)
 
-# plt.plot(score_agg['score'], score_agg['count'], label = 'All Reviews')
-# plt.plot(score_agg['score'], score_agg['sum'], label = 'Best New Music')
-# plt.legend(loc='best')
-# plt.title('Score Distribution')
-# plt.xlabel('score')
-# plt.ylabel('reviews')
-# plt.show()
+plt.plot(score_agg['score'], score_agg['count'], label = 'All Reviews')
+plt.plot(score_agg['score'], score_agg['sum'], label = 'Best New Music')
+plt.legend(loc='best')
+plt.title('Score Distribution')
+plt.xlabel('score')
+plt.ylabel('reviews')
+plt.show()
 
 genre_pubyear = pd.merge(genres, reviews[['pub_year', 'reviewid']])
 num_genres_year = genre_pubyear.groupby(['pub_year', 'genre']).agg({'reviewid': 'count'}).unstack()
@@ -47,30 +47,33 @@ total_genre_year = num_genres_year.sum(axis=1)
 #calculate percentage of each genre after summing up
 ratio_total_genre_year = num_genres_year.divide(total_genre_year, axis=0)*100
 
-# plt.figure(figsize=(12,6))
-# plt.plot(num_genres_year.index, num_genres_year.values, linestyle='--')   
-# plt.legend(["electronic", "experimental","folk/country", "global","jazz", "metal","pop/r&b", "rap", "rock"], loc='best')
-# plt.title("Genre Reviews Distribution")
-# plt.xlabel("Year")
-# plt.ylabel("Reviews")
+plt.figure(figsize=(12,6))
+plt.plot(num_genres_year.index, num_genres_year.values, linestyle='--')   
+plt.legend(["electronic", "experimental","folk/country", "global","jazz", "metal","pop/r&b", "rap", "rock"], loc='best')
+plt.title("Genre Reviews Distribution")
+plt.xlabel("Year")
+plt.ylabel("Reviews")
 
 #percentage of genre
-# ax = sn.lineplot(data=ratio_total_genre_year)
-# ax.set_xlabel('Year Review was Published')
-# ax.set_ylabel('Percentage')
-# ax.set_title('Percentage of Each Genre each Year')
-# ax.legend(loc='right', bbox_to_anchor = (1.4, 0.5))
-# plt.tight_layout()
-# plt.show()
+ax = sn.lineplot(data=ratio_total_genre_year)
+ax.set_xlabel('Year Review was Published')
+ax.set_ylabel('Percentage')
+ax.set_title('Percentage of Each Genre each Year')
+ax.legend(loc='right', bbox_to_anchor = (1.4, 0.5))
+plt.tight_layout()
+plt.show()
 
 # =================== ARTIST BASED INSIGHT =================
 
 #let's find out how many best new music is there for every artists
-# sorted_artists = reviews.sort_values('best_new_music', ascending=False)
-artist_bestmusic_count = reviews.groupby('artist')['best_new_music'].count()
 
-sorted_artist = artist_bestmusic_count.sort_values( 'best_new_music', ascending=False)
+artist_bestmusic_count = (reviews.groupby('artist', as_index=False).agg(best_new_music_count = ('best_new_music', 'count')).sort_values('best_new_music_count', ascending=False))
 
-top_10 = sorted_artist.iloc[0:9]
-print(top_10.head())
-sn.barplot()
+top_10_most_count = artist_bestmusic_count.iloc[0:10]
+
+plt.figure(figsize=(8,5))
+plt.barh(top_10_most_count['artist'], top_10_most_count['best_new_music_count'], color= 'skyblue')
+plt.xlabel('counts')
+plt.ylabel('artists')
+plt.title('Top 10 artist with most best new music')
+plt.show()
