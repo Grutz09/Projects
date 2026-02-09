@@ -25,3 +25,8 @@ a:visited {
 a:hover, a:active {
     color: rgb(56, 31, 199);
 }
+
+hr {
+    border: 1px solid #000;
+}
+
