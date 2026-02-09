@@ -13,3 +13,15 @@ table, caption, tr, th, td {
     border-collapse: collapse;
     padding: 0.5rem;
 }
+
+a{
+    color: rgb(15, 13, 10);
+}
+
+a:visited {
+    color: rgb(215, 86, 86);
+}
+
+a:hover, a:active {
+    color: rgb(56, 31, 199);
+}
