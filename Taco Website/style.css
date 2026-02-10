@@ -2,9 +2,26 @@ html {
     font-size: large;
 }
 
+* {
+    margin: 10px;
+    box-sizing: border-box;
+}
+
 body {
     background: #b87e3b97;
     color: rgb(0, 0, 0);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid#000;
+    padding: 0 20em;
+}
+
+ul, li{
+    list-style: none;
+    text-align: center;
+    list-style-position: inside;
+
 }
 
 table, caption, tr, th, td {
@@ -12,6 +29,8 @@ table, caption, tr, th, td {
     font-family: 'Courier New', Courier, monospace;
     border-collapse: collapse;
     padding: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 a{
@@ -30,3 +49,15 @@ hr {
     border: 1px solid #000;
 }
 
+.contact-form, fieldset {
+    border: 1px solid black;
+}
+
+.flex-header {
+    display: flex;
+    flex-direction: row;
+}
+
+img {
+    flex: none;
+}
