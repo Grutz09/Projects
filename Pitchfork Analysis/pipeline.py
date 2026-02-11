@@ -26,10 +26,10 @@ years = pd.read_sql("SELECT * FROM years", con)
 genres = genres.dropna().fillna(0)
 reviews = reviews.drop(['author_type', 'url'], axis=1, inplace=False)
 
-# now that we are done wih cleaning we can proceed to finding joining genre column in reviews table
-s = reviews.groupby('score')
-score_agg = s['best_new_music'].agg(['sum', 'count']).reset_index()
-print(score_agg)
+# # now that we are done wih cleaning we can proceed to finding joining genre column in reviews table
+# s = reviews.groupby('score')
+# score_agg = s['best_new_music'].agg(['sum', 'count']).reset_index()
+# print(score_agg)
 
 # plt.plot(score_agg['score'], score_agg['count'], label = 'All Reviews')
 # plt.plot(score_agg['score'], score_agg['sum'], label = 'Best New Music')
@@ -64,32 +64,30 @@ print(score_agg)
 # plt.tight_layout()
 # # plt.show()
 
-# # =================== ARTIST BASED INSIGHT =================
+# =================== ARTIST BASED INSIGHT =================
 
-# #let's find out how many best new music is there for every artists
+#let's find out how many best new music is there for every artists
 
-# artist_bestmusic_count = (reviews.groupby('artist', as_index=False).agg(best_new_music_count = ('best_new_music', 'count')).sort_values('best_new_music_count', ascending=False))
+artist_bestmusic_count = (reviews.groupby('artist', as_index=False).agg(best_new_music_count = ('best_new_music', 'count')).sort_values('best_new_music_count', ascending=False))
 
-# top_10_most_count = artist_bestmusic_count.iloc[0:10]
+top_10_most_count = artist_bestmusic_count.iloc[0:10]
 
-# plt.figure(figsize=(8,5))
-# plt.barh(top_10_most_count['artist'], top_10_most_count['best_new_music_count'], color= 'skyblue')
-# plt.xlabel('counts')
-# plt.ylabel('artists')
-# plt.title('Top 10 artist with most best new music')
-# # plt.show()
+plt.figure(figsize=(8,5))
+plt.barh(top_10_most_count['artist'], top_10_most_count['best_new_music_count'], color= 'skyblue')
+plt.xlabel('counts')
+plt.ylabel('artists')
+plt.title('Top 10 artist with most best new music')
+# plt.show()
 
 # now I'm gonna make a model to predict the score distribution of all artists
 reviews['artist_popularity'] = reviews.groupby('artist')['artist'].transform('size').copy()
 merged_df = pd.merge(reviews, genres, on='reviewid', how='left')
 
-hot_encoded_genre = pd.get_dummies(merged_df, columns=['genre'])
-print(hot_encoded_genre)
+merged_df = pd.get_dummies(merged_df, columns=['genre'])
+print(merged_df)
 
-score_features = ['pub_year', 'artist_popularity']
-
+score_features = merged_df[['artist_popularity', 'pub_year', 'genre_jazz', 'genre_global', 'genre_electronic']]
 # FEATURES
-
 X = merged_df[score_features]
 y = merged_df['score']
 
