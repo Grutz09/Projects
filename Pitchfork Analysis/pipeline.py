@@ -72,11 +72,11 @@ artist_bestmusic_count = (reviews.groupby('artist', as_index=False).agg(best_new
 
 top_10_most_count = artist_bestmusic_count.iloc[0:10]
 
-plt.figure(figsize=(8,5))
-plt.barh(top_10_most_count['artist'], top_10_most_count['best_new_music_count'], color= 'skyblue')
-plt.xlabel('counts')
-plt.ylabel('artists')
-plt.title('Top 10 artist with most best new music')
+# plt.figure(figsize=(8,5))
+# plt.barh(top_10_most_count['artist'], top_10_most_count['best_new_music_count'], color= 'skyblue')
+# plt.xlabel('counts')
+# plt.ylabel('artists')
+# plt.title('Top 10 artist with most best new music')
 # plt.show()
 
 # now I'm gonna make a model to predict the score distribution of all artists
@@ -84,15 +84,19 @@ reviews['artist_popularity'] = reviews.groupby('artist')['artist'].transform('si
 merged_df = pd.merge(reviews, genres, on='reviewid', how='left')
 
 merged_df = pd.get_dummies(merged_df, columns=['genre'])
-print(merged_df)
 
-score_features = merged_df[['artist_popularity', 'pub_year', 'genre_jazz', 'genre_global', 'genre_electronic']]
+
+#collect genre columns
+
+genre_cols = [col for col in merged_df.columns if col.startswith('genre_')]
+
+#feature lists
+score_features = ['artist_popularity', 'pub_year', 'best_new_music'] + genre_cols
+
 # FEATURES
 X = merged_df[score_features]
 y = merged_df['score']
 
-print(len(X))
-print(len(y))
 # SPLIT INTO TRAINING AND TESTING SETS
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
