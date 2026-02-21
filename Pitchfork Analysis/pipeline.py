@@ -87,7 +87,6 @@ merged_df = pd.get_dummies(merged_df, columns=['genre'])
 
 
 #collect genre columns
-
 genre_cols = [col for col in merged_df.columns if col.startswith('genre_')]
 
 #feature lists
