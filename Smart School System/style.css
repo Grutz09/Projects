@@ -13,15 +13,20 @@ body {
     display: flex;
     flex-direction: column;
     font-size: large;
-    background-color: #F3F4F6;
+    background-color: #F4F7FA;
     margin: 10px;
+    color: #2E3B4E;
 }
 
 header, #header-title {
     font-size: 50px;
     padding: 10px;
-    background-color: #1F2937;
-    color: #111827;
+    background-color: #1D4E89;
+    font-weight: bolder;
+}
+
+#header-title {
+    padding-left: 25px;
 }
 
 main {
@@ -46,6 +51,7 @@ main {
 
 .socials-icon {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: 20px;
@@ -54,6 +60,7 @@ main {
 .socials-btn {
     border: none;
     border-radius: 10px;
+    height: 70px;
 }
 
 .socials-btn > img {
@@ -61,9 +68,15 @@ main {
     height: 40px;
 }
 
+.social-icon-text {
+    text-align: center;
+    font-size: 12px;
+}
+
 .form-header{
     color: #111827;
     padding: 10px;
+    text-align: center;
 }
 
 .form-header p{
@@ -119,8 +132,12 @@ main {
     top: 50%;
     left: 8px;
     transform: translateY(-50%);
-    color: #c6c8cc;
     padding-inline: 6px;
+    pointer-events: none;
+}
+
+input:focus ~ .floating-label, input:not(:placeholder-shown) ~ .floating-label {
+    display: none;
 }
 
 .checkbox-group {
@@ -148,8 +165,7 @@ main {
 }
 
 .form-btn--submit {
-    background-color: rgb(69, 69, 233);
-    color: #FFFFFF;
+    background-color:#7CB9E8;
     font-size: 16px;
     font-weight: 600;
     transition: background-color .3 ease;

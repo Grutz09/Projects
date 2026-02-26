@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BUPulse</title>
+    <title>Login | BUPulse</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <header>
         <!-- Logo Pic -->
         <p id="header-title">
-            <a href="#">BU Pulse</a>
+            BU Pulse
         </p>
 
     </header>
@@ -22,25 +22,24 @@
                 <h1>Login to your account</h1>
                 <!-- Gmail Logo -->
                  <div class="socials-icon">
-                    <button class="socials-btn socials-btn--gmail">
+                    <button type="button" class="socials-btn socials-btn--gmail">
                         <img src="images/google-svgrepo-com.svg" alt="gmail-icon" class="btn-icon">
                     </button>
-                    
                  </div>
-                <p>Sign in using your BU email account</p>
+                <p class="social-icon-text">Sign in using your BU email account</p>
                 
                 <span id="divider">or</span>
             </div>
 
             <div class="form-box">
                 <div class="input-group">
-                    <label for="email" class="floating-label">Email address</label>
-                    <input type="email" id="email" class="input-field" required>       
+                    <input type="email" id="email" class="input-field" placeholder="" required>
+                    <label for="email" class="floating-label">Email address</label>          
                 </div>
 
                 <div class="input-group">
+                    <input type="password" id="password" class="input-field" placeholder="" required>
                     <label for="password" class="floating-label">Password</label>
-                    <input type="password" id="password" class="input-field" required>
                 </div>
 
                 <div class="checkbox-group">

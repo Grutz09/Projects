@@ -1,0 +1,90 @@
+html {
+    font-size: large;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header, header ul, header li {
+    background-color: aquamarine;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    gap: 2px;
+    padding: 30px;
+}
+
+
+main {
+    background-color: gray;
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    background-color: burlywood;
+    width: 20vh;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.main-content-area {
+    background-color: lightblue;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.welcome-msg {
+    background-color: blue;
+    padding: 40px;
+}
+
+.content-area {
+    background-color: brown;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10vh;
+    height: 50vh;
+}
+
+.upcoming-deadlines-card {  
+    background-color: rgb(205, 196, 21);
+    margin: 5px;
+    padding: 10px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.urgent-announcements-card {
+    background-color: violet;
+    margin: 5px;
+    padding: 10px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.upcoming-deadline-text {
+    margin: 10px;
+    text-align: center;
+}
+
+.urgent-announcement-text {
+    margin: 10px;
+    text-align: center;
+}
