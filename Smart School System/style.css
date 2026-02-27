@@ -21,6 +21,7 @@ body {
 header, #header-title {
     font-size: 50px;
     padding: 10px;
+    color: #FFFFFF;
     background-color: #1D4E89;
     font-weight: bolder;
 }
@@ -166,7 +167,27 @@ input:focus ~ .floating-label, input:not(:placeholder-shown) ~ .floating-label {
 
 .form-btn--submit {
     background-color:#7CB9E8;
+    border: 1px solid #2E3B4E;
     font-size: 16px;
     font-weight: 600;
     transition: background-color .3 ease;
+}
+
+
+.form-col, .form-link {
+    text-decoration: none;
+    color: #2E3B4E;
+}
+
+a:hover {
+    color: blue;
+    text-decoration: underline;
+}
+
+a:active {
+    color: blue;
+}
+
+a::after {
+    color: #2E3B4E;
 }
