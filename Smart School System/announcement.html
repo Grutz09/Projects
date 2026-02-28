@@ -1,11 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BUPulse</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements | BUPulse</title>
+  <link rel="stylesheet" href="app.css">
+  <style>
+    /* -----------------------------------------------
+       ANNOUNCEMENT PAGE STYLES
+    ----------------------------------------------- */
+
+    /* Page header: title on left, Post button on right */
+    .page-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      margin-bottom: 2px;
+    }
+
+    .page-header p {
+      font-size: 0.82rem;
+      color: var(--gray-500);
+    }
+
+    /* Filter bar: search box + filter chips side by side */
+    .filter-bar {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 6px;
+      padding: 0 12px;
+      height: 38px;
+      flex: 1;
+      max-width: 300px;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus-within { border-color: var(--green-600); }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      background: transparent;
+      width: 100%;
+    }
+
+    /* Filter chips row */
+    .filter-chips {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 99px;
+      border: 1.5px solid var(--gray-200);
+      background-color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip:hover { border-color: var(--green-600); color: var(--green-700); }
+    .filter-chip.active { background-color: var(--green-700); border-color: var(--green-700); color: white; }
+
+    /* Section divider */
+    .section-divider {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-500);
+    }
+
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: var(--gray-200);
+    }
+
+    /* Announcement list — stacks cards vertically */
+    .announcements-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Single announcement card */
+    .ann-card {
+      background-color: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+
+      /* Icon column + content column side by side */
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+    }
+
+    .ann-card:hover { border-color: var(--gray-300); }
+
+    /* Left-side colored indicator bar for urgent */
+    .ann-card.urgent-card { border-left: 4px solid var(--red); }
+
+    /* Icon box on the left */
+    .priority-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .priority-icon.urgent  { background-color: var(--red-light); }
+    .priority-icon.warning { background-color: var(--amber-100); }
+    .priority-icon.general { background-color: var(--green-100); }
+
+    /* Text content on the right — stacks vertically */
+    .ann-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Headline + badge on the same row */
+    .ann-header {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ann-headline {
+      flex: 1;
+      font-size: 0.93rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .ann-body {
+      font-size: 0.84rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* Meta info row: time, author, audience tags */
+    .ann-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ann-meta-item {
+      font-size: 0.74rem;
+      color: var(--gray-500);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .audience-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      border: 1px solid var(--gray-200);
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    /* -----------------------------------------------
+       MODAL (Post Announcement — Admin only)
+    ----------------------------------------------- */
+    .modal-overlay {
+      display: none; /* shown via JS: modal-overlay.style.display = 'flex' */
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+
+      /* Center the modal box */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background-color: white;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 520px;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+
+      /* Stack form fields vertically */
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 30px; height: 30px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 6px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 12px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--green-600); }
+
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
-    
+
+  <!-- =====================
+       SIDEBAR
+  ===================== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon">📣</div>
+      <span class="brand-name">BUPulse</span>
+    </div>
+
+    <p class="sidebar-label">Navigation</p>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        Dashboard
+      </a>
+      <a href="announcement.html" class="nav-item active">
+        <span class="nav-icon">📢</span>
+        Announcements
+        <span class="nav-badge">3</span>
+      </a>
+      <a href="chatbot.html" class="nav-item">
+        <span class="nav-icon">💬</span>
+        Ask PulsBot
+      </a>
+    </nav>
+
+    <p class="sidebar-label">Account</p>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item">
+        <span class="nav-icon">👤</span>
+        Profile
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🚪</span>
+        Logout
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">AD</div>
+        <div>
+          <div class="user-name">Admin Staff</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- =====================
+       MAIN AREA
+  ===================== -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <span class="topbar-title">Announcements</span>
+      <div class="topbar-actions">
+        <button class="icon-btn">🔔<span class="notif-dot"></span></button>
+        <div class="topbar-profile">
+          <div class="topbar-avatar">AD</div>
+          <span class="topbar-name">Admin Staff</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div>
+          <h2>School Announcements</h2>
+          <p>Showing announcements relevant to you</p>
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('postModal').classList.add('open')">
+          + Post Announcement
+        </button>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Search announcements…">
+        </div>
+        <div class="filter-chips">
+          <button class="filter-chip active">All</button>
+          <button class="filter-chip">Urgent</button>
+          <button class="filter-chip">Reminders</button>
+          <button class="filter-chip">General</button>
+        </div>
+      </div>
+
+      <!-- Pinned / Urgent -->
+      <div class="section-divider">📌 Pinned &amp; Urgent</div>
+
+      <div class="announcements-list">
+
+        <div class="ann-card urgent-card">
+          <div class="priority-icon urgent">🚨</div>
+          <div class="ann-content">
+            <div class="ann-header">
+              <span class="ann-headline">No classes on March 1 — National Day of Solidarity</span>
+              <span class="badge badge-urgent">Urgent</span>
+            </div>
+            <p class="ann-body">All classes are suspended on March 1, 2026 in observance of the National Day of Solidarity. No make-up classes will be held.</p>
+            <div class="ann-footer">
+              <span class="ann-meta-item">🕐 2 hours ago</span>
+              <span class="ann-meta-item">👤 School Admin</span>
+              <span class="audience-tag">All Students</span>
+              <span class="audience-tag">Parents</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent -->
+      <div class="section-divider">Recent</div>
+
+      <div class="announcements-list">
+
+        <div class="ann-card">
+          <div class="priority-icon warning">📅</div>
+          <div class="ann-content">
+            <div class="ann-header">
+              <span class="ann-headline">Grade submission deadline — February 29, 2026</span>
+              <span class="badge badge-warning">Reminder</span>
+            </div>
+            <p class="ann-body">All teachers must submit final grades for the second quarter no later than February 29. Parents will be notified of their child's grades via this platform.</p>
+            <div class="ann-footer">
+              <span class="ann-meta-item">🕐 5 hours ago</span>
+              <span class="ann-meta-item">👤 Registrar</span>
+              <span class="audience-tag">Grade 11</span>
+              <span class="audience-tag">Grade 12</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ann-card">
+          <div class="priority-icon general">📝</div>
+          <div class="ann-content">
+            <div class="ann-header">
+              <span class="ann-headline">Math Quiz on Chapter 6 — March 3</span>
+              <span class="badge badge-general">Info</span>
+            </div>
+            <p class="ann-body">Mr. Reyes reminds Grade 11 Section Narra students of the upcoming Math quiz covering Chapter 6: Sequences and Series.</p>
+            <div class="ann-footer">
+              <span class="ann-meta-item">🕐 Yesterday</span>
+              <span class="ann-meta-item">👤 Mr. Reyes</span>
+              <span class="audience-tag">Sec. Narra</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ann-card">
+          <div class="priority-icon general">🔬</div>
+          <div class="ann-content">
+            <div class="ann-header">
+              <span class="ann-headline">Science Fair 2026 — Registration Now Open</span>
+              <span class="badge badge-general">Info</span>
+            </div>
+            <p class="ann-body">The Annual Science Fair will be held on March 20, 2026. Registration deadline is March 5. Visit the Science Dept. for forms.</p>
+            <div class="ann-footer">
+              <span class="ann-meta-item">🕐 2 days ago</span>
+              <span class="ann-meta-item">👤 Science Dept.</span>
+              <span class="audience-tag">All Students</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ann-card">
+          <div class="priority-icon warning">⚠️</div>
+          <div class="ann-content">
+            <div class="ann-header">
+              <span class="ann-headline">Absence Notice — Maria Santos (Grade 11 - Narra)</span>
+              <span class="badge badge-warning">Parent Alert</span>
+            </div>
+            <p class="ann-body">This is to inform the parent/guardian of Maria Santos that she was marked absent on February 26, 2026. Please contact the class adviser if this is a concern.</p>
+            <div class="ann-footer">
+              <span class="ann-meta-item">🕐 3 days ago</span>
+              <span class="ann-meta-item">👤 Guidance Office</span>
+              <span class="audience-tag">Parent/Guardian</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- =====================
+       POST MODAL (Admin)
+  ===================== -->
+  <div class="modal-overlay" id="postModal">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('postModal').classList.remove('open')">✕</button>
+
+      <h3>Post New Announcement</h3>
+
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" placeholder="e.g. No classes on March 1">
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Write the full announcement here…"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Priority Level</label>
+        <select>
+          <option>General Info</option>
+          <option>Reminder</option>
+          <option>Urgent</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Send To</label>
+        <select>
+          <option>All Students &amp; Parents</option>
+          <option>Grade 11 Only</option>
+          <option>Grade 12 Only</option>
+          <option>Specific Section</option>
+          <option>Parents Only</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="document.getElementById('postModal').classList.remove('open')">Cancel</button>
+        <button class="btn btn-primary">Post Announcement</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

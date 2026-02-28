@@ -1,63 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | BUPulse</title>
-    <link rel="stylesheet" href="dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | BUPulse</title>
+  <link rel="stylesheet" href="app.css">
+  <style>
+    /* -----------------------------------------------
+       DASHBOARD-SPECIFIC STYLES
+    ----------------------------------------------- */
+
+    /* Welcome banner */
+    .welcome-banner {
+      background-color: var(--green-800);
+      border-radius: 12px;
+      padding: 28px 32px;
+      color: white;
+
+      /* Title on the left, date on the right */
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .welcome-banner h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .welcome-banner p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.88rem;
+    }
+
+    .welcome-date {
+      text-align: right;
+    }
+
+    .welcome-date .date-big {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--amber-400);
+    }
+
+    .welcome-date .date-sub {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* -----------------------------------------------
+       STATS ROW — 4 cards side by side
+    ----------------------------------------------- */
+    .stats-row {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+    }
+
+    .stat-card {
+      flex: 1; /* each card takes equal width */
+      background-color: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 18px 20px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Icon + label on the same row */
+    .stat-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .stat-icon.green  { background-color: var(--green-100); }
+    .stat-icon.amber  { background-color: var(--amber-100); }
+    .stat-icon.red    { background-color: var(--red-light); }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--gray-900);
+      line-height: 1;
+    }
+
+    .stat-change {
+      font-size: 0.74rem;
+      color: var(--gray-500);
+    }
+
+    /* -----------------------------------------------
+       CONTENT GRID — two cards side by side
+    ----------------------------------------------- */
+    .content-row {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+
+    .content-row .card {
+      flex: 1; /* equal width */
+    }
+
+    /* -----------------------------------------------
+       ANNOUNCEMENT ITEMS (inside card)
+    ----------------------------------------------- */
+    .announcement-item {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .announcement-item:last-of-type { border-bottom: none; }
+
+    /* Colored dot */
+    .priority-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .dot-urgent  { background-color: var(--red); }
+    .dot-warning { background-color: var(--amber-500); }
+    .dot-general { background-color: var(--green-400); }
+
+    .ann-title {
+      font-size: 0.87rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--gray-900);
+    }
+
+    .ann-meta {
+      font-size: 0.74rem;
+      color: var(--gray-500);
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* -----------------------------------------------
+       DEADLINE ITEMS (inside card)
+    ----------------------------------------------- */
+    .deadline-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .deadline-item:last-of-type { border-bottom: none; }
+
+    /* Date box */
+    .date-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background-color: var(--green-100);
+      flex-shrink: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .date-box.urgent { background-color: var(--red-light); }
+
+    .date-box .day { font-size: 1.1rem; font-weight: 700; color: var(--green-700); line-height: 1; }
+    .date-box.urgent .day { color: var(--red); }
+    .date-box .mon { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; color: var(--gray-500); }
+
+    .deadline-info { flex: 1; }
+    .deadline-title { font-size: 0.87rem; font-weight: 600; }
+    .deadline-sub   { font-size: 0.74rem; color: var(--gray-500); }
+
+    /* View all link */
+    .view-all {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green-600);
+    }
+
+    .view-all:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-    <header>
-        <!-- Logo -->
-        <span class="logo-text">
-            <h1>BUPulse</h1>
-        </span>
 
-        <nav class="nav-menu">
-            <ul class="nav-link">
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
+  <!-- =====================
+       SIDEBAR
+  ===================== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon">📣</div>
+      <span class="brand-name">BUPulse</span>
+    </div>
+
+    <p class="sidebar-label">Navigation</p>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        Dashboard
+      </a>
+      <a href="announcement.html" class="nav-item">
+        <span class="nav-icon">📢</span>
+        Announcements
+        <span class="nav-badge">3</span>
+      </a>
+      <a href="chatbot.html" class="nav-item">
+        <span class="nav-icon">💬</span>
+        Ask PulsBot
+      </a>
+    </nav>
+
+    <p class="sidebar-label">Account</p>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item">
+        <span class="nav-icon">👤</span>
+        Profile
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🚪</span>
+        Logout
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">JD</div>
+        <div>
+          <div class="user-name">Juan Dela Cruz</div>
+          <div class="user-role">Student · Grade 11</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- =====================
+       MAIN AREA
+  ===================== -->
+  <div class="main-wrapper">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <span class="topbar-title">Dashboard</span>
+      <div class="topbar-actions">
+        <button class="icon-btn" title="Notifications">
+          🔔
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" title="Search">🔍</button>
+        <div class="topbar-profile">
+          <div class="topbar-avatar">JD</div>
+          <span class="topbar-name">Juan Dela Cruz</span>
+        </div>
+      </div>
     </header>
 
-    <main>
-        <div class="sidebar">
-            <ul class="sidebar-links">
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#">Announcement</a></li>
-                <li><a href="#">Chatbot</a></li>
-            </ul>
+    <!-- Page content -->
+    <main class="page-content">
+
+      <!-- Welcome banner -->
+      <div class="welcome-banner">
+        <div>
+          <h2>Good morning, Juan! 👋</h2>
+          <p>Here's what's happening in your school today.</p>
+        </div>
+        <div class="welcome-date">
+          <div class="date-big">Feb 28</div>
+          <div class="date-sub">Friday, 2026</div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">New Announcements</span>
+            <span class="stat-icon green">📢</span>
+          </div>
+          <div class="stat-value">3</div>
+          <div class="stat-change">Since yesterday</div>
         </div>
 
-        <div class="main-content-area">
-            <div class="welcome-msg">
-                <h1>Welcome to {Name of Website}</h1>
-            </div>
-
-            <div class="content-area">
-                <div class="upcoming-deadlines-card">
-                    <h2 class="upcoming-deadline-text">Upcoming Deadlines</h2>
-                    <div class="deadlines-content">
-                        <p>Lorem ipsum</p>
-                    </div>
-                    
-                </div>
-                <div class="urgent-announcements-card">
-                    <h2 class="urgent-announcement-text">Urgent Announcements!</h2>
-                    <div class="announcements-content">
-                        <p>Lorem ipsum</p>
-                    </div>
-                    
-                </div>
-            </div>
-            
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Upcoming Deadlines</span>
+            <span class="stat-icon amber">📅</span>
+          </div>
+          <div class="stat-value">5</div>
+          <div class="stat-change">Within 7 days</div>
         </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Urgent Alerts</span>
+            <span class="stat-icon red">🚨</span>
+          </div>
+          <div class="stat-value">1</div>
+          <div class="stat-change">Requires attention</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Unread Messages</span>
+            <span class="stat-icon green">✉️</span>
+          </div>
+          <div class="stat-value">8</div>
+          <div class="stat-change">From your sections</div>
+        </div>
+
+      </div>
+
+      <!-- Two cards side by side -->
+      <div class="content-row">
+
+        <!-- Announcements card -->
+        <div class="card">
+          <div class="card-title">Recent Announcements</div>
+          <div class="card-subtitle">Latest messages for you</div>
+
+          <div class="announcement-item">
+            <span class="priority-dot dot-urgent"></span>
+            <div>
+              <div class="ann-title">⚠️ No classes on March 1 — National Holiday</div>
+              <div class="ann-meta">
+                <span class="badge badge-urgent">Urgent</span>
+                Admin · 2 hrs ago
+              </div>
+            </div>
+          </div>
+
+          <div class="announcement-item">
+            <span class="priority-dot dot-warning"></span>
+            <div>
+              <div class="ann-title">Grade Submission Deadline — Feb 29</div>
+              <div class="ann-meta">
+                <span class="badge badge-warning">Reminder</span>
+                Grade 11 · 5 hrs ago
+              </div>
+            </div>
+          </div>
+
+          <div class="announcement-item">
+            <span class="priority-dot dot-general"></span>
+            <div>
+              <div class="ann-title">Math Quiz on Chapter 6 — March 3</div>
+              <div class="ann-meta">
+                <span class="badge badge-general">Info</span>
+                Sec. Narra · Yesterday
+              </div>
+            </div>
+          </div>
+
+          <div class="announcement-item">
+            <span class="priority-dot dot-general"></span>
+            <div>
+              <div class="ann-title">Science Fair registration now open</div>
+              <div class="ann-meta">
+                <span class="badge badge-general">Info</span>
+                All students · 2 days ago
+              </div>
+            </div>
+          </div>
+
+          <a href="announcement.html" class="view-all">View all announcements →</a>
+        </div>
+
+        <!-- Deadlines card -->
+        <div class="card">
+          <div class="card-title">Upcoming Deadlines</div>
+          <div class="card-subtitle">Don't miss these dates</div>
+
+          <div class="deadline-item">
+            <div class="date-box urgent">
+              <span class="day">29</span>
+              <span class="mon">Feb</span>
+            </div>
+            <div class="deadline-info">
+              <div class="deadline-title">English Essay Submission</div>
+              <div class="deadline-sub">English · Ms. Santos</div>
+            </div>
+            <span class="badge badge-urgent">Tomorrow</span>
+          </div>
+
+          <div class="deadline-item">
+            <div class="date-box">
+              <span class="day">3</span>
+              <span class="mon">Mar</span>
+            </div>
+            <div class="deadline-info">
+              <div class="deadline-title">Math Quiz — Chapter 6</div>
+              <div class="deadline-sub">Mathematics · Mr. Reyes</div>
+            </div>
+            <span class="badge badge-warning">3 days</span>
+          </div>
+
+          <div class="deadline-item">
+            <div class="date-box">
+              <span class="day">5</span>
+              <span class="mon">Mar</span>
+            </div>
+            <div class="deadline-info">
+              <div class="deadline-title">Science Fair Registration</div>
+              <div class="deadline-sub">Science Dept.</div>
+            </div>
+            <span class="badge badge-general">5 days</span>
+          </div>
+
+          <div class="deadline-item">
+            <div class="date-box">
+              <span class="day">10</span>
+              <span class="mon">Mar</span>
+            </div>
+            <div class="deadline-info">
+              <div class="deadline-title">Filipino Sulating Repleksyon</div>
+              <div class="deadline-sub">Filipino · Mrs. Garcia</div>
+            </div>
+            <span class="badge badge-general">10 days</span>
+          </div>
+
+          <a href="#" class="view-all">View full schedule →</a>
+        </div>
+
+      </div>
+
     </main>
-    
+  </div>
 
-    <footer>
-
-    </footer>
 </body>
 </html>
