@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Trade Entry Form -->
+    <div class="f-column">
+        <h2>Trading Journal</h2>
+
+        <form id="trading-form">
+            <input
+                type="text"
+                id="pair"
+                placeholder="Trading Pair (e.g. EURUSD)"
+                required
+            >
+
+            <label for="position">Position</label>
+            <select id="position" required>
+                <option value="">Select Position</option>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+            </select>
+
+            <input
+                type="number"
+                id="profit_loss"
+                placeholder="Profit / Loss"
+                step="0.01"
+                required
+            >
+
+            <label for="result">Result</label>
+            <select id="result" required>
+                <option value="">Result</option>
+                <option value="Win">Win</option>
+                <option value="Loss">Loss</option>
+                <option value="Breakeven">Breakeven</option>
+            </select>
+
+            <input
+                type="url"
+                id="chart_link"
+                placeholder="Chart Screenshot URL"
+            >
+
+            <textarea
+                id="notes"
+                rows="5"
+                placeholder="Trade Notes"
+            ></textarea>
+
+            <button type="button" onclick="saveTrades()">
+                Save Trade
+            </button>
+        </form>
+    </div>
+
+    <!-- Trade List -->
+    <div class="trade-list">
+        <h2>Trade History</h2>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Pair</th>
+                    <th>Position</th>
+                    <th>P/L</th>
+                    <th>Result</th>
+                    <th>Chart</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+
+            <tbody id="trade-table-body">
+                <!-- Trades will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="script.js"></script>
+    
+
+</body>
+</html>
