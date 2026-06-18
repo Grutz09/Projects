@@ -36,21 +36,52 @@ window.saveTrades = async function saveTrades(){
     }
 
     console.log(window.supabase);
+    
 }
 
-winddow.showTrades = async function showTrades(){
-    supabase.from('trades').select
-    ([
-        {
-            trading_pair: pair,
-            position: position,
-            profit_loss: profit_loss,
-            result: result,
-            chart_link: chart_link,
-            notes: notes
-        }
-    ])
+window.showTrades = async function showTrades(){
+    const { data: trades, error} = await supabase
+    .from('trades')
+    .select("*");
 
-    let tradeContainer = document.querySelector("#trade-table-body");
-    tradeContainer.innerHTML = "";
+    const tradeList = document.querySelector(".trade-table");
+
+    if (!tradeList){
+        console.log("Table body not found in DOM.")
+    }
+
+    if (error){
+        console.log(error);
+        return;
+    }
+
+    if (trades === null){
+        alert("Trades not found.");
+        return;
+    }
+
+    if (!trades || trades.length === 0){
+        console.log("No trades found.")
+        tradeList.innerHTML = "";
+        return;
+    }
+
+    tradeList.innerHTML = "";
+
+    trades.forEach(trade =>{
+        //create table row for each trade history
+        const tradeRow = document.createElement("tr");
+        tradeRow.innerHTML = `
+            <td>${trade.trading_pair ?? ""}</td>
+            <td>${trade.position ?? ""}</td>
+            <td>${trade.profit_loss ?? ""}</td>
+            <td>${trade.result ?? ""}</td>
+            <td>${trade.chart_link ?? ""}</td>
+            <td>${trade.notes ?? ""}</td>
+        `;
+
+        tradeList.appendChild(tradeRow);
+    })
 }
+
+showTrades()

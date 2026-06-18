@@ -7,10 +7,28 @@
 body{
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 30px;
+    background-color: #000;
+    color: #fff;
+    gap: 80px;
+    font-family: sans-serif;
+}
+
+.f-column{
+    background-color: #421A4C;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(162, 63, 186, 0.8),  /* Bright, sharp inner glow */
+                0 0 30px rgba(99, 38, 115, 0.6),   /* Medium spread */
+                0 0 60px rgba(190, 125, 208, 0.8);   /* Wide, soft outer glow */
+}
+
+h2{
+    padding: 10px;
 }
 
 #trading-form{
@@ -18,6 +36,7 @@ body{
     flex-direction: column;
     gap: 10px;
     width: 300px;
+    align-items: center;
 }
 
 #trading-form input,
@@ -26,13 +45,89 @@ body{
 #trading-form button{
     width: 100%;
     padding: 8px;
+    border-radius: 5px;
 }
 
-.trade-list{
+#trading-form textarea{
+    resize: none;
+}
+
+#trading-form button{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #2e113a 0%, #8d3db4 100%); 
+    box-shadow: 0 0 15px rgba(208, 159, 220, 0.7);
+    border: none;
+    color: #fff;
+}
+
+#trading-form button:hover{
+    background-color: rgba(222, 209, 209, 1.0);
+    cursor: pointer;
+}
+
+/* 1. Fix the main container card */
+.trade-list {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    
+    /* Change from pure black to a deep dark purple gradient */
+    background: linear-gradient(135deg, #2e113a 0%, #8d3db4 100%); 
+    
+    border-radius: 14px;
+    padding: 30px;
+    
+    /* Enhanced outer glow */
+    box-shadow: 0 0 55px rgba(162, 63, 186, 1.0), 
+                0 0 40px rgba(99, 38, 115, 1.0);
+    
+    font-family: sans-serif;
+    color: #ffffff;
+}
+
+/* 2. Style the Title */
+.trade-list h2 {
+    margin: 0 0 5px 0;
+    font-size: 1.8rem;
+    letter-spacing: 0.2px;
+}
+
+/* 3. Strip the harsh lines and format the table structure */
+.trade-list table {
+    width: 100%;
+    border-collapse: collapse; /* This removes the double-border spacing */
+    text-align: center;
+}
+
+/* 4. Headers: subtle semi-transparent background */
+.trade-list th {
+    padding: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 5. Table Rows: Soft divider lines instead of harsh boxes */
+.trade-list td {
+    padding: 16px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    /* Soft dividers instead of full boxes */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+}
+
+/* 6. Premium Row Hover Effect */
+.trade-list tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    cursor: pointer;
 }
 
 table,
@@ -40,3 +135,4 @@ th,
 td{
     padding: 10px;
 }
+
