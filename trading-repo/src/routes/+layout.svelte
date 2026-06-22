@@ -37,6 +37,37 @@
 </footer>
 
 <style>
+
+/* Global Body Background Styling */
+	:global(body) {
+		margin: 0;
+		padding: 0;
+		font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		background-color: var(--background);
+		color: var(--text);
+		min-height: 100vh;
+		
+		/* 4-Layer Hybrid Background Design:
+		   1. Tech dot grid -> 2. Top-left violet glow -> 3. Bottom-right orchid glow -> 4. Base background image */
+		background-image: 
+			/* Layer 1: Subtle grid dot pattern (repeats every 24px) */
+			radial-gradient(circle at 1px 1px, rgba(139, 92, 246, 0.12) 1.5px, transparent 0),
+			
+			/* Layer 2: Top-left electric violet glow */
+			radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.22) 0%, transparent 50%),
+			
+			/* Layer 3: Bottom-right orchid glow */
+			radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.16) 0%, transparent 50%),
+			
+			/* Layer 4: Your background image */
+			url(../lib/assets/repo-bg.jpg);
+			
+		/* Set sizes for each layer: Dots repeat at 24px, gradients stretch, image covers */
+		background-size: 24px 24px, 100% 100%, 100% 100%, cover;
+		background-attachment: scroll, fixed, fixed, fixed;
+		background-position: center;
+		background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+	}
 	nav,
 	.navWrapper,
 	.footer{
@@ -103,7 +134,7 @@
 	/* Footer Container */
 	.footer {
 		padding: 3rem 2rem;
-		background-color: rgba(9, 5, 20, 0.9); /* Solidified dark violet backdrop */
+		/* background-color: rgba(9, 5, 20, 0.9); Solidified dark violet backdrop */
 		border-top: 1px solid rgba(139, 92, 246, 0.1); /* Subtle top line separation */
 		display: flex;
 		flex-direction: column;

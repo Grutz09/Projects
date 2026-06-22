@@ -14,12 +14,12 @@ html, body{
 }
 
 :root {
-  --text: #ffffff;
-  --background: #000000;
-  --background-2: #001600;
-  --primary: #009900;
-  --secondary: #990099;
-  --accent: #160016;
+  --background: #090514;     /* Deep, space-black with a subtle violet tint */
+  --background-2: #120e25;   /* Slightly lighter dark violet for cards/sections */
+  --text: #f5f3ff;           /* Crisp off-white with a soft violet undertone */
+  --primary: #8b5cf6;        /* Electric violet (tailored for buttons, links, etc.) */
+  --secondary: #d946ef;      /* Radiant orchid/magenta (great for gradients & highlights) */
+  --accent: #2e1065;         /* Deep grape (excellent for borders, shadows, or subtle glow) */
 }
 
 body{
