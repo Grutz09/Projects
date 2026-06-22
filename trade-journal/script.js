@@ -78,10 +78,40 @@ window.showTrades = async function showTrades(){
             <td>${trade.result ?? ""}</td>
             <td>${trade.chart_link ?? ""}</td>
             <td>${trade.notes ?? ""}</td>
+
+            <td class = "actions">
+                <button class="delete-btn">Delete</button>
+            </td>
         `;
+
+        const deleteBtn = tradeRow.querySelector(".delete-btn");
+
+        deleteBtn.addEventListener("click", () => {
+            deleteTrade(trade.id);
+        });
 
         tradeList.appendChild(tradeRow);
     })
+}
+
+async function deleteTrade(id) {
+    console.log("Deleting", id);
+
+    const { error } = await supabase
+    .from('trades')
+    .delete()
+    .eq("id", id)
+    .select();
+
+    if (error){
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    alert("Trade deleted.");
+
+    showTrades();
 }
 
 showTrades()

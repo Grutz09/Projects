@@ -136,3 +136,22 @@ td{
     padding: 10px;
 }
 
+.actions .delete-btn {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #2e113a 0%, #8d3db4 100%); 
+    box-shadow: 0 0 15px rgba(208, 159, 220, 0.7);
+    border: none;
+    color: #fff;
+    width: 70px;
+    height: 30px;
+}
+
+tr:hover .delete-btn {
+    opacity: 1;
+}
