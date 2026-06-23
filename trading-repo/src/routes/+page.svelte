@@ -31,9 +31,6 @@
             alert("Trade saved.");
         }
     }
-
-    
-
 </script>
 
 <main>
