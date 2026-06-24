@@ -1,5 +1,5 @@
 <script>
-	import { supabase } from "$lib/supabase";
+	import { supabase } from '$lib/supabase';
 	let pairs = $state('');
 	let position = $state('');
 	let profit = $state('');
@@ -7,30 +7,27 @@
 	let result = $state('');
 	let chart_link = $state('');
 
-    async function addTrade(e) {
-        e.preventDefault();
+	async function addTrade(e) {
+		e.preventDefault();
 
-        let trade = {
-            pairs: pairs,
-            position: position,
-            profit: profit,
-            loss: loss,
-            result: result,
-            chart_link: chart_link
-        }
+		let trade = {
+			pairs: pairs,
+			position: position,
+			profit: profit,
+			loss: loss,
+			result: result,
+			chart_link: chart_link
+		};
 
-        const { error } = await supabase
-            .from('trade-repos')
-            .insert(trade)
-            .select();
+		const { error } = await supabase.from('trade-repos').insert(trade).select();
 
-        if(error){
-            console.log(error);
-            return;
-        }else {
-            alert("Trade saved.");
-        }
-    }
+		if (error) {
+			console.log(error);
+			return;
+		} else {
+			alert('Trade saved.');
+		}
+	}
 </script>
 
 <main>
@@ -93,6 +90,14 @@
 		box-sizing: border-box;
 	}
 
+	h2 {
+		display: block;
+		font-size: 1.5em;
+		font-weight: bold;
+		font-family: 'Courier', serif;
+		unicode-bidi: isolate;
+		text-align: center;
+	}
 	/* The form card itself (Futuristic Glass Card as a Grid Row) */
 	.trading-form {
 		display: grid;

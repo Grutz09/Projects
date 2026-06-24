@@ -46,17 +46,8 @@ window.showTrades = async function showTrades(){
 
     const tradeList = document.querySelector(".trade-table");
 
-    if (!tradeList){
-        console.log("Table body not found in DOM.")
-    }
-
     if (error){
         console.log(error);
-        return;
-    }
-
-    if (trades === null){
-        alert("Trades not found.");
         return;
     }
 
