@@ -13,20 +13,43 @@
 
 	let allTrades = [];
 
+    // reruns the main function whenever there's a reactive code. (e.g count or submit – makes changes to the website)
 	$effect(() => {
 		console.log(tradeStats);
 		if (allTrades.length < 1) return;
 		statistics();
 	});
 
+    // fetches the datas on database - it avoids repeated fetching of data and instead stores it into a variable
 	async function fetchTrade() {
 		const { data: trades, error } = await supabase.from('trade-repos').select('*');
 		allTrades = trades;
 		statistics();
 	}
 
+    // consists of 3 visual graphs and their logic
 	async function statistics() {
-		let totalProfits = 0;
+        // destroys the old graph whenever user changes filter to replace it
+		if (newCharts) {
+			newCharts.destroy();
+		}
+
+        if (tradeStats === 'totalPnl'){
+            createBarchart();
+        }
+
+        if (tradeStats === 'accountTrends'){
+            createLineChart();
+        }
+
+        if (tradeStats === 'winRatio'){
+            createPieChart();
+        }
+        
+    }
+
+    async function createBarchart() {
+        let totalProfits = 0;
 		allTrades.forEach((trade) => {
 			totalProfits += trade.profit ?? 0;
 		});
@@ -36,12 +59,7 @@
 			totalLoss += trade.loss ?? 0;
 		});
 
-		if (newCharts) {
-			newCharts.destroy();
-		}
-
-		if (tradeStats === 'totalPnl') {
-			newCharts = new Chart(pnlTrends, {
+		newCharts = new Chart(pnlTrends, {
 				type: 'bar',
 				data: {
 					labels: ['Total Profits', 'Total Loss'],
@@ -68,6 +86,7 @@
 			});
 		}
 
+    async function createLineChart(){
         // variables for line chart
         let validTrades = allTrades?.filter(
             (trade) => trade.profit != null || trade.loss != null
@@ -83,45 +102,71 @@
             return acc;
         }, []);
 
-		if (tradeStats === 'accountTrends') {
-			console.log(dates, pnl);
-			newCharts = new Chart(accountTrends, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        data: pnl,
-                        backgroundColor: 'rgba(139, 92, 246, 0.15)',
-                        borderColor: 'rgba(139, 92, 246, 1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 0,        // 👈 hides dots on the line
-                        pointHoverRadius: 5,   // 👈 shows dot only on hover
-                    }]
+		console.log(dates, pnl);
+		newCharts = new Chart(accountTrends, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    data: pnl,
+                    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,        
+                    pointHoverRadius: 5, 
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }  
                 },
-                options: {
-                    plugins: {
-                        legend: { display: false }  // 👈 hides legend
-                    },
-                    scales: {
-                        x: {
-                            ticks: { color: '#888', maxTicksLimit: 7 },
-                            grid: { display: false },
-                            border: { display: false }
+                scales: {
+                    x: {
+                        ticks: { color: '#888', maxTicksLimit: 7 },
+                         grid: { display: false },
+                        border: { display: false }
                         },
-                        y: {
-                            min: 0,
-                            ticks: { color: '#888' },
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            border: { display: false }
-                        }
+                    y: {
+                        min: 0,
+                        ticks: { color: '#888' },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        border: { display: false }
                     }
                 }
-            });
-	
-        }
+            }
+        });
     }
+
+    async function createPieChart(){
+        if(allTrades.length === 0) return;
+        let win = allTrades.filter((trades) => trades.result === "Win");
+        let loss = allTrades.filter((trades) => trades.result === "Loss");
+        let winRate = (win.length/allTrades.length) * 100;
+        let lossRate = (loss.length/allTrades.length) * 100;
+
+        newCharts = new Chart(winRatio, {
+            type: 'pie',
+            data: {
+                labels: ['Win', 'Loss'],
+                datasets: [{
+                    data: [winRate, lossRate],
+                    backgroundColor: ['rgba(139, 92, 246, 0.7)', 'rgba(217, 70, 239, 0.7)'],
+                    borderColor: ['rgba(139, 92, 246, 1)', 'rgba(217, 70, 239, 1)'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: { color: '#f5f3ff' }
+                    }
+                }
+            }
+        });
+    }
+
 	onMount(fetchTrade);
 </script>
 
@@ -141,6 +186,10 @@
 		</div>
 		<div style={tradeStats !== 'accountTrends' ? 'display:none' : ''}>
 			<canvas class="line-chart" bind:this={accountTrends}></canvas>
+		</div>
+
+        <div style={tradeStats !== 'winRatio' ? 'display:none' : ''}>
+			<canvas class="pie-chart" bind:this={winRatio}></canvas>
 		</div>
 	</div>
 </main>
@@ -174,7 +223,7 @@
         display: flex;
         flex-direction: row;
         justify-content: end;
-        padding: 20px;
+        padding: 0px 20px 20px 20px;
         align-items: center;
         font-size: medium;
         gap: 8px;

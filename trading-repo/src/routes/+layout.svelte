@@ -102,7 +102,7 @@
 		height: 60px;
 		border-radius: 50%;
 		object-fit: cover;
-		border: 2px solid var(--primary);
+		/* border: 2px solid var(--primary); */
 		box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); /* Electric glow around logo */
 	}
 
@@ -145,7 +145,7 @@
 		height: 1px;
 		/* Fades out on the left and right, glowing violet in the center */
 		background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.35) 50%, transparent);
-		margin: 4rem auto;
+		margin: 1rem auto;
 		width: 90%; /* Keeps it from stretching completely to the screen edges */
 	}
 
