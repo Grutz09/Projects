@@ -34,7 +34,6 @@
 	{@render children()}
 </main>
 
-
 <footer class="footer">
 	<!-- Optional footer links for a premium layout -->
 	<div class="footer-links">

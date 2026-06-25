@@ -8,7 +8,6 @@
         .from('trade-repos')
         .select("*");
 
-
         if(error){
             console.log(error);
             alert("Error encountered.");
